@@ -11,5 +11,6 @@ namespace ZooManagmentSystem.Data
         public DbSet<Models.BirdModel> Birds { get; set; }
         public DbSet<Models.Employee> Employees { get; set; }
         public DbSet<Models.MammalModel> Mammals { get; set; }
+        public DbSet<Models.TaskModel> Tasks { get; set; }
     }
 }
