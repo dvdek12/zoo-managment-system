@@ -4,10 +4,46 @@
 @{
 }
 
+@model ZooManagmentSystem.ViewModels.AnimalPageViewModel
+
 <html>
 <body>
 
-    <h3>Animals !</h3>
+    <h3>Add an Animal !</h3>
+    <form method="post" asp-controller="Animals" asp-action="Create" class="mb-3">
+        <label asp-for="NewAnimal.Name" class="form-label"></label>
+        <input name="Name"/> <br/>
+
+        <label asp-for="NewAnimal.Description" class="form-label"></label>
+        <input name="Description" /> <br />
+
+        <label asp-for="NewAnimal.RaceName" class="form-label"></label>
+        <input name="RaceName" /> <br />
+
+        <button class="btn btn-primary btn-sm" type="submit">Submit</button>
+    </form>
+
+    <h3>All Animals</h3>
+    <ul>
+        @foreach(var animal in Model.Animals)
+        {
+            <li>
+                @animal.Name
+                <a asp-controller="Animals" asp-action="Edit" asp-route-id="@animal.id" class="btn btn-warning btn-sm">Edit</a>
+                <a asp-controller="Animals" asp-action="Delete" asp-route-id="@animal.id" class="btn btn-danger btn-sm">Remove</a>
+            </li>
+        }
+    </ul>
+
+    @if(TempData["Success"] != null)
+    {
+        <p>@TempData["Success"]</p>
+	}
+
+    @if(TempData["Error"] != null)
+    {
+        <p>@TempData["Error"]</p>
+	}
 
 </body>
 </html>

@@ -1,0 +1,25 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model ZooManagmentSystem.Models.AnimalModel
+
+<html>
+    <body>
+    <h3>Edit animal </h3>
+
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="id" />
+        <label asp-for="Name"></label>
+        <input asp-for="Name" /> <br />
+        <label asp-for="RaceName"></label>
+        <input asp-for="RaceName" /> <br />
+        <label asp-for="Description"></label>
+        <input asp-for="Description" /> <br />
+        <button class="btn btn-primary btn-sm" type="submit">Zapisz</button>
+        <a class="btn btn-danger btn-sm"  asp-action="Index">Anuluj</a>
+    </form>
+    </body>
+</html>
