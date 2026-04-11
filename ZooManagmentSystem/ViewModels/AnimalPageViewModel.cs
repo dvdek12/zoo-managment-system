@@ -1,4 +1,4 @@
-﻿using ZooManagmentSystem.Models;
+﻿using ZooManagmentSystem.Models.Animal;
 
 namespace ZooManagmentSystem.ViewModels
 {

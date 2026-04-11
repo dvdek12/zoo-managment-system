@@ -1,6 +1,7 @@
 ﻿using ZooManagmentSystem.Enums;
+using ZooManagmentSystem.Models.Animal;
 
-namespace ZooManagmentSystem.Models
+namespace ZooManagmentSystem.Models.Employee
 {
     public class TaskModel : ModelPrototype
     {
@@ -12,6 +13,6 @@ namespace ZooManagmentSystem.Models
         public EnclosureModel? Enclosure { get; set; }
         public AnimalModel? Animal { get; set; }
         
-        public Employee? AssignedEmployee { get; set; }
+        public EmployeeModel? AssignedEmployee { get; set; }
     }
 }

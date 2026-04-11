@@ -1,4 +1,4 @@
-﻿namespace ZooManagmentSystem.Models
+﻿namespace ZooManagmentSystem.Models.Animal
 {
     public class MammalModel : AnimalModel
     {

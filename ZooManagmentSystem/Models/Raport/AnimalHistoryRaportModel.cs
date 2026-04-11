@@ -1,4 +1,6 @@
-﻿namespace ZooManagmentSystem.Models
+﻿using ZooManagmentSystem.Models.Animal;
+
+namespace ZooManagmentSystem.Models.Raport
 {
     public class AnimalHistoryRaportModel : RaportModel
     {

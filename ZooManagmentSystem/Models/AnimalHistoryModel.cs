@@ -1,4 +1,5 @@
 ﻿using ZooManagmentSystem.Enums;
+using ZooManagmentSystem.Models.Animal;
 
 namespace ZooManagmentSystem.Models
 {
