@@ -1,6 +1,6 @@
 ﻿namespace ZooManagmentSystem.Models.Employee
 {
-    public class RoleModel
+    public class RoleModel : ModelPrototype
     {
         public string Name { get; set; }
         public string Description { get; set; }

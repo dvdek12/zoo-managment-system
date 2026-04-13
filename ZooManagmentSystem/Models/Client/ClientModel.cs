@@ -1,6 +1,6 @@
 ﻿namespace ZooManagmentSystem.Models.Client
 {
-    public class ClientModel
+    public class ClientModel : ModelPrototype
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

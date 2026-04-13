@@ -2,7 +2,7 @@
 
 namespace ZooManagmentSystem.Models.Client
 {
-    public class TicketModel
+    public class TicketModel : ModelPrototype
     {
         public ClientModel Client { get; set; }
         public DateTime PurchaseDate { get; set; }
