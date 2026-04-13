@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ZooManagmentSystem.Models
+namespace ZooManagmentSystem.Models.Animal
 {
     public class AnimalModel : ModelPrototype
     {

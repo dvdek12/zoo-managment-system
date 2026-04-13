@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ZooManagmentSystem.Data;
-using ZooManagmentSystem.Models;
+using ZooManagmentSystem.Models.Animal;
 using ZooManagmentSystem.ViewModels;
 
 namespace ZooManagmentSystem.Controllers

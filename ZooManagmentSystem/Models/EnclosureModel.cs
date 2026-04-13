@@ -1,4 +1,6 @@
-﻿namespace ZooManagmentSystem.Models
+﻿using ZooManagmentSystem.Models.Animal;
+
+namespace ZooManagmentSystem.Models
 {
     public class EnclosureModel : ModelPrototype
     {
