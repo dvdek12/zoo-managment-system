@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ZooManagmentSystem.Models.Animal
 {
+    [Table("Animals")]
     public class AnimalModel : ModelPrototype
     {
         [Required]

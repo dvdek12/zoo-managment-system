@@ -3,6 +3,7 @@ using ZooManagmentSystem.Models.Animal;
 using ZooManagmentSystem.Models.Employee;
 using ZooManagmentSystem.Models.Raport;
 using ZooManagmentSystem.Models.Enums;
+using ZooManagmentSystem.Models.Client;
 
 namespace ZooManagmentSystem.Data
 {
@@ -28,6 +29,11 @@ namespace ZooManagmentSystem.Data
         //Raports
         public DbSet<FeedingPlanRaportModel> FeedingPlanRaports { get; set; }
         public DbSet<AnimalHistoryRaportModel> AnimalHistoryRaports { get; set; }
+        public DbSet<WorkFlowRaportModel> WorkFlowRaports { get; set; }
+
+        // Clients
+        public DbSet<ClientModel> Clients { get; set; }
+        public DbSet<TicketModel> Tickets { get; set; }
 
         // Enums
         public DbSet<AnimalBreedModel> AnimalBreeds { get; set; }
@@ -35,6 +41,8 @@ namespace ZooManagmentSystem.Data
         public DbSet<FoodTypeModel> FoodTypes { get; set; }
         public DbSet<TaskCategoryModel> TaskCategories { get; set; }
         public DbSet<EntryTypeModel> EntryTypes { get; set; }
+
+
 
     }
 }

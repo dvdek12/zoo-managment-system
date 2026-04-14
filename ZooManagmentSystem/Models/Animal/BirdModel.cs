@@ -1,5 +1,8 @@
-﻿namespace ZooManagmentSystem.Models.Animal
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ZooManagmentSystem.Models.Animal
 {
+    [Table("Birds")]
     public class BirdModel : AnimalModel
     {
         public string Color { get; set; }
