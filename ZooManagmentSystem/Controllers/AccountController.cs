@@ -38,15 +38,28 @@ namespace ZooManagmentSystem.Controllers
             {
                 if (model.IsEmployee)
                 {
-                    var employee = new EmployeeModel { ApplicationUserId = user.Id };
+                    var employee = new EmployeeModel
+                    {
+                        ApplicationUserId = user.Id,
+                        Title = "Cleaner",
+                        FirstName = "John",
+                        LastName = "Doe",
+                        BirthDay = DateTime.Now, 
+                    };
                     _context.Employees.Add(employee);
-                    await _userManager.AddToRoleAsync(user, "Pracownik");
+                    await _userManager.AddToRoleAsync(user, "Employee");
                 }
                 else
                 {
-                    var client = new ClientModel { ApplicationUserId = user.Id };
+                    var client = new ClientModel { 
+                        ApplicationUserId = user.Id,
+                        Email = model.Email,
+                        FirstName = "Jane",
+                        LastName = "Smith",
+                        BirthDay = DateTime.Now,
+                    };
                     _context.Clients.Add(client);
-                    await _userManager.AddToRoleAsync(user, "Klient");
+                    await _userManager.AddToRoleAsync(user, "Client");
                 }
 
                 await _context.SaveChangesAsync();
@@ -86,5 +99,9 @@ namespace ZooManagmentSystem.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+
+        // GET: /Account/AccessDenied
+        [HttpGet]
+        public IActionResult AccessDenied() => View();
     }
 }

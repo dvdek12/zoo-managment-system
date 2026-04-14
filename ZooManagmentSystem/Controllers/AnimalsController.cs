@@ -3,10 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using ZooManagmentSystem.Data;
 using ZooManagmentSystem.Models.Animal;
 using ZooManagmentSystem.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ZooManagmentSystem.Controllers
 {
-    [Route("animals")]
+    [Route("animals"), Authorize(Roles = ("Employee"))]
     public class AnimalsController : Controller
     {
         private readonly AppDbContext _context;
