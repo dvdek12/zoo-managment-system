@@ -4,10 +4,11 @@ using ZooManagmentSystem.Models.Employee;
 using ZooManagmentSystem.Models.Raport;
 using ZooManagmentSystem.Models.Enums;
 using ZooManagmentSystem.Models.Client;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace ZooManagmentSystem.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
