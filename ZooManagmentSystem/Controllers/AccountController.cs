@@ -88,7 +88,7 @@ namespace ZooManagmentSystem.Controllers
             if (result.Succeeded)
                 return RedirectToAction("Index", "Home");
 
-            ModelState.AddModelError("", "Nieprawidłowy email lub hasło");
+            ModelState.AddModelError("", "Wrong email or password");
             return View(model);
         }
 
