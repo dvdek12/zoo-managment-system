@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Claims;
 using System.Text;
 using ZooManagmentSystem.Data;
+using ZooManagmentSystem.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,7 @@ var key = Encoding.ASCII.GetBytes(jwtSettings["SecretKey"]);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'ZooManagmentSystemContext' not found.")));
@@ -42,7 +45,8 @@ builder.Services.AddCors(options => {
     {
         builder.WithOrigins("http://localhost:5173")
                .AllowAnyMethod()
-               .AllowAnyHeader();
+               .AllowAnyHeader()
+               .AllowCredentials();    
     });
 });
 
@@ -75,7 +79,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-
+app.MapHub<GorillaHealthNot>("/gorillaHealthNot");
 
 
 app.UseHttpsRedirection();
