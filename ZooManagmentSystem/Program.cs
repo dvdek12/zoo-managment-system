@@ -2,13 +2,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Security.Claims;
 using System.Text;
 using ZooManagmentSystem.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var key = Encoding.ASCII.GetBytes("123");
+var key = Encoding.ASCII.GetBytes(jwtSettings["SecretKey"]);
 
 
 // Add services to the container.
@@ -32,6 +33,7 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = new SymmetricSecurityKey(key),
             ValidateIssuer = false,
             ValidateAudience = false,
+            RoleClaimType = ClaimTypes.Role
         };
     });
 
@@ -73,8 +75,8 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-app.UseAuthentication();
-app.UseAuthorization();
+
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -82,6 +84,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseCors("AllowVue");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
