@@ -1,5 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using System.Data;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using ZooManagmentSystem.Data;
 using ZooManagmentSystem.Models.Client;
 using ZooManagmentSystem.Models.Employee;
@@ -11,85 +17,83 @@ namespace ZooManagmentSystem.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IConfiguration _configuration;
         private readonly AppDbContext _context;
 
-        public AccountController(UserManager<ApplicationUser> userManager,
+        public AccountController(IConfiguration configuration, UserManager<ApplicationUser> userManager,
                                  SignInManager<ApplicationUser> signInManager,
                                  AppDbContext context)
         {
+            _configuration = configuration;
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
         }
 
-        // GET: /Account/Register
-        public IActionResult Register() => View();
 
         // POST: /Account/Register
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
             var result = await _userManager.CreateAsync(user, model.Password);
-
             if (result.Succeeded)
             {
-                if (model.IsEmployee)
+                var client = new ClientModel
                 {
-                    var employee = new EmployeeModel
-                    {
-                        ApplicationUserId = user.Id,
-                        Title = "Cleaner",
-                        FirstName = "John",
-                        LastName = "Doe",
-                        BirthDay = DateTime.Now, 
-                    };
-                    _context.Employees.Add(employee);
-                    await _userManager.AddToRoleAsync(user, "Employee");
-                }
-                else
-                {
-                    var client = new ClientModel { 
-                        ApplicationUserId = user.Id,
-                        Email = model.Email,
-                        FirstName = "Jane",
-                        LastName = "Smith",
-                        BirthDay = DateTime.Now,
-                    };
-                    _context.Clients.Add(client);
-                    await _userManager.AddToRoleAsync(user, "Client");
-                }
+                    ApplicationUserId = user.Id,
+                    Email = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    BirthDay = model.BirthDay,
+                };
+
+                _context.Clients.Add(client);
 
                 await _context.SaveChangesAsync();
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                return RedirectToAction("Index", "Home");
+
+                await _userManager.AddToRoleAsync(user, "Client");
+
+                return Ok(new { message = "Użytkownik zarejestrowany pomyślnie!" });
             }
 
-            foreach (var error in result.Errors)
-                ModelState.AddModelError("", error.Description);
+            return BadRequest(result.Errors);
 
-            return View(model);
         }
-
-        // GET: /Account/Login
-        public IActionResult Login() => View();
 
         // POST: /Account/Login
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login([FromBody] LoginViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            var result = await _signInManager.PasswordSignInAsync(
-                model.Email, model.Password, model.RememberMe, false);
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return Unauthorized(new { message = "Nieprawidłowy adres email lub hasło." });
+            }
 
-            if (result.Succeeded)
-                return RedirectToAction("Index", "Home");
+            var isPasswordValid = await _userManager.CheckPasswordAsync(user, model.Password);
 
-            ModelState.AddModelError("", "Wrong email or password");
-            return View(model);
+            if (isPasswordValid)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                var token = GenerateJwtToken(user, roles);
+                return Ok(new
+                {
+                    token = token,
+                    email = user.Email,
+                    roles = roles
+                });
+            }
+
+            return Unauthorized(new { message = "Nieprawidłowy adres email lub hasło." });
         }
 
         // POST: /Account/Logout
@@ -103,5 +107,37 @@ namespace ZooManagmentSystem.Controllers
         // GET: /Account/AccessDenied
         [HttpGet]
         public IActionResult AccessDenied() => View();
+
+
+        private string GenerateJwtToken(ApplicationUser user, IList<string> roles)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.UserName)
+            };
+
+            // Dynamicznie dodajemy wszystkie role użytkownika do Claimów
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            // Pobieramy klucz z konfiguracji (appsettings.json)
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecretKey"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["JwtSettings:Issuer"],
+                audience: _configuration["JwtSettings:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddHours(3), // Token ważny przez 3 godziny
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
     }
 }
