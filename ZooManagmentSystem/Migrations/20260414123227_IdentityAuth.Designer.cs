@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ZooManagmentSystem.Data;
 
@@ -11,9 +12,11 @@ using ZooManagmentSystem.Data;
 namespace ZooManagmentSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260414123227_IdentityAuth")]
+    partial class IdentityAuth
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -376,7 +379,7 @@ namespace ZooManagmentSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Roleid")
+                    b.Property<int>("Roleid")
                         .HasColumnType("int");
 
                     b.Property<int?>("Supervisorid")
@@ -800,7 +803,9 @@ namespace ZooManagmentSystem.Migrations
 
                     b.HasOne("ZooManagmentSystem.Models.Employee.RoleModel", "Role")
                         .WithMany()
-                        .HasForeignKey("Roleid");
+                        .HasForeignKey("Roleid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ZooManagmentSystem.Models.Employee.EmployeeModel", "Supervisor")
                         .WithMany()
