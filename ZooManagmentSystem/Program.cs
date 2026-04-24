@@ -40,6 +40,13 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
+// External animals api 
+builder.Services.AddHttpClient("ExternalAnimalsClient", client =>
+{
+    client.BaseAddress = new Uri("https://api.api-ninjas.com/v1/animals");
+    client.DefaultRequestHeaders.Add("X-Api-Key", "Irz4oqPTeyM4tZ6lg6GfFOYeGjQjdn41mmz14S0N");
+});
+
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowVue", builder =>
     {
