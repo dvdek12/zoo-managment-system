@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json.Serialization;
 using ZooManagmentSystem.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -53,6 +54,13 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 builder.Services.ConfigureApplicationCookie(options => {
     options.LoginPath = "/Account/Login";
     options.AccessDeniedPath = "/Account/AccessDenied";
+});
+
+// Configuration for JSON serialization to handle reference loops 
+//Used because of the cycle in the relationship between TicketModel and TicketEntryTypeModel
+//It may issue in the future, than it will be necessary to change the way of handling this relationship
+builder.Services.AddControllers().AddJsonOptions(options => {
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
 
 builder.Services.AddEndpointsApiExplorer();
