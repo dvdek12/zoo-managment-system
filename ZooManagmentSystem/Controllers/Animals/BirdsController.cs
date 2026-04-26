@@ -6,35 +6,35 @@ using ZooManagmentSystem.Data;
 using ZooManagmentSystem.Models.Animal;
 using ZooManagmentSystem.ViewModels;
 
-namespace ZooManagmentSystem.Controllers
+namespace ZooManagmentSystem.Controllers.Animals
 {
     [ApiController]
-    [Route("animals")] 
+    [Route("birds")]
     //[Authorize(Roles = ("Employee"))]
-    public class AnimalsController : ControllerBase
+    public class BirdsController : ControllerBase
     {
         private readonly AppDbContext _context;
 
-        public AnimalsController(AppDbContext context)
+        public BirdsController(AppDbContext context)
         {
             _context = context;
         }
 
-        [Route("all")]
+        [Route("getAll")]
         [HttpGet]
-        public async Task<IActionResult> All()
+        public async Task<IActionResult> GetAll()
         {
-            var animals = await _context.Animals.ToListAsync();
-            return Ok(animals);
+            var birds = await _context.Birds.ToListAsync();
+            return Ok(birds);
         }
 
         [Route("create")]
         [HttpPost]
-        public async Task<IActionResult> Create(AnimalModel animal)
+        public async Task<IActionResult> Create(BirdModel bird)
         {
             try
             {
-                _context.Animals.Add(animal);
+                _context.Birds.Add(bird);
                 await _context.SaveChangesAsync();
                 return Ok(new { message = "Animal added successfuly!" });
             }
@@ -48,18 +48,18 @@ namespace ZooManagmentSystem.Controllers
         [Route("edit/{id}")]
         public IActionResult Edit(int id)
         {
-            var animal = _context.Animals.Find(id);
-            if (animal == null) return NotFound();
-            return Ok(animal);
+            var bird = _context.Birds.Find(id);
+            if (bird == null) return NotFound();
+            return Ok(bird);
         }
 
         [HttpPost]
         [Route("edit/{id}")]
-        public IActionResult Edit(int id, AnimalModel animal)
+        public IActionResult Edit(int id, BirdModel bird)
         {
-            if(id != animal.id) return BadRequest();
+            if (id != bird.id) return BadRequest();
 
-            _context.Animals.Update(animal);
+            _context.Birds.Update(bird);
             _context.SaveChanges();
             return Ok("Animal edited!");
         }
@@ -68,10 +68,10 @@ namespace ZooManagmentSystem.Controllers
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            var animal = _context.Animals.Find(id);
-            if (animal == null) return NotFound();
+            var bird = _context.Birds.Find(id);
+            if (bird == null) return NotFound();
 
-            _context.Animals.Remove(animal);
+            _context.Birds.Remove(bird);
             _context.SaveChanges();
             return Ok("Animal deleted!");
         }
