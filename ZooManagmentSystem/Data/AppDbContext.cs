@@ -19,8 +19,7 @@ namespace ZooManagmentSystem.Data
 
         //Animals
         public DbSet<AnimalModel> Animals { get; set; }
-        public DbSet<BirdModel> Birds { get; set; }
-        public DbSet<MammalModel> Mammals { get; set; }
+        public DbSet<AttributeModel> Attributes { get; set; }
 
         //Employees and Tasks
         public DbSet<EmployeeModel> Employees { get; set; }
