@@ -40,7 +40,7 @@ namespace ZooManagmentSystem.Controllers.Animals
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
         }
 
