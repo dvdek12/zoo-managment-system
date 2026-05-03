@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ZooManagmentSystem.Data;
 
@@ -11,9 +12,11 @@ using ZooManagmentSystem.Data;
 namespace ZooManagmentSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260426133656_AddedTicketEntryTypes")]
+    partial class AddedTicketEntryTypes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -363,13 +366,14 @@ namespace ZooManagmentSystem.Migrations
                     b.Property<int>("TicketId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TicketModelid")
+                        .HasColumnType("int");
+
                     b.HasKey("id");
 
-                    b.HasIndex("EntryTypeId");
+                    b.HasIndex("TicketModelid");
 
-                    b.HasIndex("TicketId");
-
-                    b.ToTable("TicketEntryTypes");
+                    b.ToTable("TicketEntryTypeModel");
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.Client.TicketModel", b =>
@@ -803,21 +807,9 @@ namespace ZooManagmentSystem.Migrations
 
             modelBuilder.Entity("ZooManagmentSystem.Models.Client.TicketEntryTypeModel", b =>
                 {
-                    b.HasOne("ZooManagmentSystem.Models.Client.EntryTypeModel", "EntryType")
-                        .WithMany()
-                        .HasForeignKey("EntryTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ZooManagmentSystem.Models.Client.TicketModel", "Ticket")
+                    b.HasOne("ZooManagmentSystem.Models.Client.TicketModel", null)
                         .WithMany("EntryTypes")
-                        .HasForeignKey("TicketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("EntryType");
-
-                    b.Navigation("Ticket");
+                        .HasForeignKey("TicketModelid");
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.Employee.EmployeeModel", b =>

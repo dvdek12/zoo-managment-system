@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ZooManagmentSystem.Data;
 
@@ -11,9 +12,11 @@ using ZooManagmentSystem.Data;
 namespace ZooManagmentSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260426123752_ChangedTickets")]
+    partial class ChangedTickets
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -346,32 +349,6 @@ namespace ZooManagmentSystem.Migrations
                     b.ToTable("EntryTypes");
                 });
 
-            modelBuilder.Entity("ZooManagmentSystem.Models.Client.TicketEntryTypeModel", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<int>("EntryTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TicketId")
-                        .HasColumnType("int");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("EntryTypeId");
-
-                    b.HasIndex("TicketId");
-
-                    b.ToTable("TicketEntryTypes");
-                });
-
             modelBuilder.Entity("ZooManagmentSystem.Models.Client.TicketModel", b =>
                 {
                     b.Property<int>("id")
@@ -382,6 +359,10 @@ namespace ZooManagmentSystem.Migrations
 
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
+
+                    b.PrimitiveCollection<string>("EntryTypeIds")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -801,25 +782,6 @@ namespace ZooManagmentSystem.Migrations
                     b.Navigation("ApplicationUser");
                 });
 
-            modelBuilder.Entity("ZooManagmentSystem.Models.Client.TicketEntryTypeModel", b =>
-                {
-                    b.HasOne("ZooManagmentSystem.Models.Client.EntryTypeModel", "EntryType")
-                        .WithMany()
-                        .HasForeignKey("EntryTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ZooManagmentSystem.Models.Client.TicketModel", "Ticket")
-                        .WithMany("EntryTypes")
-                        .HasForeignKey("TicketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("EntryType");
-
-                    b.Navigation("Ticket");
-                });
-
             modelBuilder.Entity("ZooManagmentSystem.Models.Employee.EmployeeModel", b =>
                 {
                     b.HasOne("ZooManagmentSystem.Data.ApplicationUser", "ApplicationUser")
@@ -930,11 +892,6 @@ namespace ZooManagmentSystem.Migrations
                     b.Navigation("Client");
 
                     b.Navigation("Employee");
-                });
-
-            modelBuilder.Entity("ZooManagmentSystem.Models.Client.TicketModel", b =>
-                {
-                    b.Navigation("EntryTypes");
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.Employee.EmployeeModel", b =>

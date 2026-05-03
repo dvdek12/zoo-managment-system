@@ -1,14 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ZooManagmentSystem.Data;
 using ZooManagmentSystem.Models.Animal;
 using ZooManagmentSystem.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 
-namespace ZooManagmentSystem.Controllers
+namespace ZooManagmentSystem.Controllers.Animals
 {
-    [Route("animals"), Authorize(Roles = ("Employee"))]
-    public class AnimalsController : Controller
+    [ApiController]
+    [Route("animals")] 
+    //[Authorize(Roles = ("Employee"))]
+    public class AnimalsController : ControllerBase
     {
         private readonly AppDbContext _context;
 
@@ -17,19 +20,15 @@ namespace ZooManagmentSystem.Controllers
             _context = context;
         }
 
-        [Route("all")]
+        [Route("getAll")]
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> GetAll()
         {
-            var viewModel = new AnimalPageViewModel
-            {
-                NewAnimal = new AnimalModel(),
-                Animals = _context.Animals.ToList()
-            };
-
-            return View(viewModel);
+            var animals = await _context.Animals.ToListAsync();
+            return Ok(animals);
         }
 
+        [Route("create")]
         [HttpPost]
         public async Task<IActionResult> Create(AnimalModel animal)
         {
@@ -37,13 +36,11 @@ namespace ZooManagmentSystem.Controllers
             {
                 _context.Animals.Add(animal);
                 await _context.SaveChangesAsync();
-                TempData["Success"] = "Animal created successfully!";
-                return RedirectToAction("Index");
+                return Ok(new { message = "Animal added successfuly!" });
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"An error occurred while creating the animal: {ex.Message}";
-                return RedirectToAction("Index");
+                return BadRequest(ex);
             }
         }
 
@@ -53,7 +50,7 @@ namespace ZooManagmentSystem.Controllers
         {
             var animal = _context.Animals.Find(id);
             if (animal == null) return NotFound();
-            return View(animal);
+            return Ok(animal);
         }
 
         [HttpPost]
@@ -64,9 +61,10 @@ namespace ZooManagmentSystem.Controllers
 
             _context.Animals.Update(animal);
             _context.SaveChanges();
-            return RedirectToAction("Index");
+            return Ok("Animal edited!");
         }
 
+        [Route("delete")]
         [HttpGet]
         public IActionResult Delete(int id)
         {
@@ -75,7 +73,7 @@ namespace ZooManagmentSystem.Controllers
 
             _context.Animals.Remove(animal);
             _context.SaveChanges();
-            return RedirectToAction("Index");
+            return Ok("Animal deleted!");
         }
     }
 }
