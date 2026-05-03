@@ -34,15 +34,26 @@ namespace ZooManagmentSystem.Data
         // Clients
         public DbSet<ClientModel> Clients { get; set; }
         public DbSet<TicketModel> Tickets { get; set; }
+        public DbSet<TicketEntryTypeModel> TicketEntryTypes { get; set; }
+        public DbSet<EntryTypeModel> EntryTypes { get; set; }
 
         // Enums
         public DbSet<AnimalBreedModel> AnimalBreeds { get; set; }
         public DbSet<EnclosureTypeModel> EnclosureTypes { get; set; }
         public DbSet<FoodTypeModel> FoodTypes { get; set; }
         public DbSet<TaskCategoryModel> TaskCategories { get; set; }
-        public DbSet<EntryTypeModel> EntryTypes { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<TicketEntryTypeModel>()
+                .HasOne(te => te.Ticket)
+                .WithMany(t => t.EntryTypes)
+                .HasForeignKey(te => te.TicketId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
 
     }
+
 }
