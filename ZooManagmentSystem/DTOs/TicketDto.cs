@@ -1,6 +1,6 @@
-﻿namespace ZooManagmentSystem.ViewModels
+﻿namespace ZooManagmentSystem.DTOs
 {
-    public class TicketViewModel
+    public class TicketDto
     {
         public int ClientId { get; set; }
         public Dictionary<int, int> EntryTypeIds { get; set; } = new Dictionary<int, int>();
