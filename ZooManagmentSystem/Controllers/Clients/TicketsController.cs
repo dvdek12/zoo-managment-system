@@ -64,7 +64,7 @@ namespace ZooManagmentSystem.Controllers.Clients
         // POST: tickets
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<TicketModel>> CreateTicket(TicketDTO ticketModel)
+        public async Task<ActionResult<TicketModel>> CreateTicket(TicketDto ticketModel)
         {
             var entryTypesIds = ticketModel.EntryTypeIds.Select(et => et.Key).ToList();
             var entryTypes = await _context.EntryTypes

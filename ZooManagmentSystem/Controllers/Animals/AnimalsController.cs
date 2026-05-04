@@ -55,6 +55,7 @@ namespace ZooManagmentSystem.Controllers.Animals
             }
         }
 
+
         [HttpGet]
         [Route("getOne/{id}")]
         public IActionResult GetOne(int id)

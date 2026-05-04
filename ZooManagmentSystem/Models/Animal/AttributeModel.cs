@@ -6,7 +6,7 @@ namespace ZooManagmentSystem.Models.Animal
     {
         public string AttributeName { get; set; }
         public int? AnimalTypeId { get; set; }
-        public AnimalType? AnimalType { get; set; }
+        public AnimalTypeModel? AnimalType { get; set; }
         public AttributeTypeEnum AttributeType { get; set; } = AttributeTypeEnum.String;
     }
 

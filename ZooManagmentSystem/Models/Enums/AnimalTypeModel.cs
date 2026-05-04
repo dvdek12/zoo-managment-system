@@ -2,7 +2,7 @@
 
 namespace ZooManagmentSystem.Models.Enums
 {
-    public class AnimalType : ModelPrototype
+    public class AnimalTypeModel : ModelPrototype
     {
         public string AnimalTypeName { get; set; }
     }

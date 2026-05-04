@@ -1,6 +1,6 @@
 ﻿namespace ZooManagmentSystem.Models.Animal
 {
-    public class AnimalAttributeModel
+    public class AnimalAttributeModel : ModelPrototype
     {
         public int AnimalId { get; set; }
         public AnimalModel? Animal { get; set; }

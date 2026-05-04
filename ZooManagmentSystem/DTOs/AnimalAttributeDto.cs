@@ -1,4 +1,5 @@
-﻿using ZooManagmentSystem.Models.Animal;
+﻿using ZooManagmentSystem.Models;
+using ZooManagmentSystem.Models.Animal;
 
 namespace ZooManagmentSystem.DTOs
 {
