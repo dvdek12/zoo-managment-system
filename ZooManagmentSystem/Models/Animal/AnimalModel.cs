@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ZooManagmentSystem.Models.Animal
 {
-    [Table("Animals")]
     public class AnimalModel : ModelPrototype
     {
         [Required]
@@ -12,5 +11,8 @@ namespace ZooManagmentSystem.Models.Animal
         public string Description { get; set; }
         public string? Origin { get; set; }
         public DateTime? DateOfArrival { get; set; }
+        public List<AnimalAttributeModel> Attributes { get; set; } = new List<AnimalAttributeModel>();
+        public int? EnclosureId { get; set; }
+        public EnclosureModel? Enclosure { get; set; }
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using ZooManagmentSystem.Data;
 using ZooManagmentSystem.Models.Animal;
 using ZooManagmentSystem.ViewModels;
+using ZooManagmentSystem.DTOs;
 
 namespace ZooManagmentSystem.Controllers.Animals
 {
@@ -30,23 +31,34 @@ namespace ZooManagmentSystem.Controllers.Animals
 
         [Route("create")]
         [HttpPost]
-        public async Task<IActionResult> Create(AnimalModel animal)
+        public async Task<IActionResult> Create(AnimalDto animal)
         {
             try
             {
-                _context.Animals.Add(animal);
+                var newAnimal = new AnimalModel
+                {
+                    Name = animal.Name,
+                    RaceName = animal.RaceName,
+                    Description = animal.Description,
+                    Origin = animal.Origin,
+                    DateOfArrival = animal.DateOfArrival,
+                    EnclosureId = animal.EnclosureId
+                };
+
+                _context.Animals.Add(newAnimal);
                 await _context.SaveChangesAsync();
                 return Ok(new { message = "Animal added successfuly!" });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
         }
 
+
         [HttpGet]
-        [Route("edit/{id}")]
-        public IActionResult Edit(int id)
+        [Route("getOne/{id}")]
+        public IActionResult GetOne(int id)
         {
             var animal = _context.Animals.Find(id);
             if (animal == null) return NotFound();

@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ZooManagmentSystem.Data;
+using ZooManagmentSystem.DTOs;
 using ZooManagmentSystem.Models.Client;
-using ZooManagmentSystem.ViewModels;
 
 namespace ZooManagmentSystem.Controllers.Clients
 {
@@ -64,7 +64,7 @@ namespace ZooManagmentSystem.Controllers.Clients
         // POST: tickets
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<TicketModel>> CreateTicket(TicketViewModel ticketModel)
+        public async Task<ActionResult<TicketModel>> CreateTicket(TicketDto ticketModel)
         {
             var entryTypesIds = ticketModel.EntryTypeIds.Select(et => et.Key).ToList();
             var entryTypes = await _context.EntryTypes

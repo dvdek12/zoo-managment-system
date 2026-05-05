@@ -19,8 +19,8 @@ namespace ZooManagmentSystem.Data
 
         //Animals
         public DbSet<AnimalModel> Animals { get; set; }
-        public DbSet<BirdModel> Birds { get; set; }
-        public DbSet<MammalModel> Mammals { get; set; }
+        public DbSet<AttributeModel> Attributes { get; set; }
+        public DbSet<AnimalAttributeModel> AnimalAttributes { get; set; }
 
         //Employees and Tasks
         public DbSet<EmployeeModel> Employees { get; set; }
@@ -40,6 +40,7 @@ namespace ZooManagmentSystem.Data
 
         // Enums
         public DbSet<AnimalBreedModel> AnimalBreeds { get; set; }
+        public DbSet<AnimalTypeModel> AnimalType { get; set; }
         public DbSet<EnclosureTypeModel> EnclosureTypes { get; set; }
         public DbSet<FoodTypeModel> FoodTypes { get; set; }
         public DbSet<TaskCategoryModel> TaskCategories { get; set; }
@@ -54,7 +55,6 @@ namespace ZooManagmentSystem.Data
                 .HasForeignKey(te => te.TicketId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
-
     }
 
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ZooManagmentSystem.Data;
 
@@ -11,9 +12,11 @@ using ZooManagmentSystem.Data;
 namespace ZooManagmentSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260503141513_DynamicAnimalAttributes")]
+    partial class DynamicAnimalAttributes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -220,33 +223,6 @@ namespace ZooManagmentSystem.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("ZooManagmentSystem.Models.Animal.AnimalAttributeModel", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<int>("AnimalId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AttributeId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("AttributeValue")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("AnimalId");
-
-                    b.HasIndex("AttributeId");
-
-                    b.ToTable("AnimalAttributes");
-                });
-
             modelBuilder.Entity("ZooManagmentSystem.Models.Animal.AnimalModel", b =>
                 {
                     b.Property<int>("id")
@@ -262,7 +238,7 @@ namespace ZooManagmentSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("EnclosureId")
+                    b.Property<int>("EnclosureId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -291,7 +267,7 @@ namespace ZooManagmentSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int?>("AnimalTypeId")
+                    b.Property<int>("AnimalId")
                         .HasColumnType("int");
 
                     b.Property<string>("AttributeName")
@@ -301,9 +277,13 @@ namespace ZooManagmentSystem.Migrations
                     b.Property<int>("AttributeType")
                         .HasColumnType("int");
 
+                    b.Property<string>("AttributeValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("id");
 
-                    b.HasIndex("AnimalTypeId");
+                    b.HasIndex("AnimalId");
 
                     b.ToTable("Attributes");
                 });
@@ -606,23 +586,6 @@ namespace ZooManagmentSystem.Migrations
                     b.ToTable("AnimalBreeds");
                 });
 
-            modelBuilder.Entity("ZooManagmentSystem.Models.Enums.AnimalTypeModel", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<string>("AnimalTypeName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("id");
-
-                    b.ToTable("AnimalType");
-                });
-
             modelBuilder.Entity("ZooManagmentSystem.Models.Enums.EnclosureTypeModel", b =>
                 {
                     b.Property<int>("id")
@@ -811,7 +774,18 @@ namespace ZooManagmentSystem.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ZooManagmentSystem.Models.Animal.AnimalAttributeModel", b =>
+            modelBuilder.Entity("ZooManagmentSystem.Models.Animal.AnimalModel", b =>
+                {
+                    b.HasOne("ZooManagmentSystem.Models.EnclosureModel", "Enclosure")
+                        .WithMany("Animals")
+                        .HasForeignKey("EnclosureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Enclosure");
+                });
+
+            modelBuilder.Entity("ZooManagmentSystem.Models.Animal.AttributeModel", b =>
                 {
                     b.HasOne("ZooManagmentSystem.Models.Animal.AnimalModel", "Animal")
                         .WithMany("Attributes")
@@ -819,33 +793,7 @@ namespace ZooManagmentSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ZooManagmentSystem.Models.Animal.AttributeModel", "Attribute")
-                        .WithMany()
-                        .HasForeignKey("AttributeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Animal");
-
-                    b.Navigation("Attribute");
-                });
-
-            modelBuilder.Entity("ZooManagmentSystem.Models.Animal.AnimalModel", b =>
-                {
-                    b.HasOne("ZooManagmentSystem.Models.EnclosureModel", "Enclosure")
-                        .WithMany("Animals")
-                        .HasForeignKey("EnclosureId");
-
-                    b.Navigation("Enclosure");
-                });
-
-            modelBuilder.Entity("ZooManagmentSystem.Models.Animal.AttributeModel", b =>
-                {
-                    b.HasOne("ZooManagmentSystem.Models.Enums.AnimalTypeModel", "AnimalType")
-                        .WithMany()
-                        .HasForeignKey("AnimalTypeId");
-
-                    b.Navigation("AnimalType");
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.AnimalHistoryModel", b =>
