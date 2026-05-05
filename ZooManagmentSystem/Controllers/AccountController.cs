@@ -7,12 +7,15 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using ZooManagmentSystem.Data;
+using ZooManagmentSystem.DTOs;
+using ZooManagmentSystem.DTOs.Employee;
 using ZooManagmentSystem.Models.Client;
 using ZooManagmentSystem.Models.Employee;
 using ZooManagmentSystem.ViewModels;
 
 namespace ZooManagmentSystem.Controllers
 {
+    [Route("Account")]
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -32,8 +35,9 @@ namespace ZooManagmentSystem.Controllers
 
 
         // POST: /Account/Register
+        [Route("Register")]
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
+        public async Task<IActionResult> Register([FromBody] ClientDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -57,14 +61,47 @@ namespace ZooManagmentSystem.Controllers
 
                 await _userManager.AddToRoleAsync(user, "Client");
 
-                return Ok(new { message = "Użytkownik zarejestrowany pomyślnie!" });
+                return Ok(new { message = "User registered successfuly!" });
             }
 
+            return BadRequest(result.Errors);
+        }
+
+        // POST: /Account/Employee/Register
+        [Route("RegisterEmployee")]
+        [HttpPost]
+        public async Task<IActionResult> RegisterEmployee([FromBody] EmployeeDto model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
+            {
+                var employee = new EmployeeModel
+                {
+                    ApplicationUserId = user.Id,
+                    Email = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    BirthDay = model.BirthDay,
+                };
+
+                _context.Employees.Add(employee);
+
+                await _context.SaveChangesAsync();
+
+                await _userManager.AddToRoleAsync(user, "Employee");
+
+                return Ok(new { message = "Employee registered successfuly!" });
+            }
             return BadRequest(result.Errors);
 
         }
 
         // POST: /Account/Login
+        [Route("Login")]
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginViewModel model)
         {
@@ -76,7 +113,7 @@ namespace ZooManagmentSystem.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
-                return Unauthorized(new { message = "Nieprawidłowy adres email lub hasło." });
+                return Unauthorized(new { message = "Wrong email address or password." });
             }
 
             var isPasswordValid = await _userManager.CheckPasswordAsync(user, model.Password);
@@ -93,10 +130,11 @@ namespace ZooManagmentSystem.Controllers
                 });
             }
 
-            return Unauthorized(new { message = "Nieprawidłowy adres email lub hasło." });
+            return Unauthorized(new { message = "Wrong email address or password." });
         }
 
         // POST: /Account/Logout
+        [Route("Logout")]
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
@@ -105,6 +143,7 @@ namespace ZooManagmentSystem.Controllers
         }
 
         // GET: /Account/AccessDenied
+        [Route("AccesDenied")]
         [HttpGet]
         public IActionResult AccessDenied() => View();
 

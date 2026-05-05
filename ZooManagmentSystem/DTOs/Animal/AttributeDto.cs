@@ -1,7 +1,7 @@
 ﻿using ZooManagmentSystem.Models.Animal;
 using ZooManagmentSystem.Models.Enums;
 
-namespace ZooManagmentSystem.DTOs
+namespace ZooManagmentSystem.DTOs.Animal
 {
     public class AttributeDto
     {
