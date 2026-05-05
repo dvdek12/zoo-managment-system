@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 using ZooManagmentSystem.Data;
+using ZooManagmentSystem.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,7 @@ var key = Encoding.ASCII.GetBytes(jwtSettings["SecretKey"]);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'ZooManagmentSystemContext' not found.")));
@@ -38,12 +41,20 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
+// External animals api 
+builder.Services.AddHttpClient("ExternalAnimalsClient", client =>
+{
+    client.BaseAddress = new Uri("https://api.api-ninjas.com/v1/animals");
+    client.DefaultRequestHeaders.Add("X-Api-Key", "Irz4oqPTeyM4tZ6lg6GfFOYeGjQjdn41mmz14S0N");
+});
+
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowVue", builder =>
     {
         builder.WithOrigins("http://localhost:5173")
                .AllowAnyMethod()
-               .AllowAnyHeader();
+               .AllowAnyHeader()
+               .AllowCredentials();    
     });
 });
 
@@ -86,7 +97,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-
+app.MapHub<GorillaHealthNot>("/gorillaHealthNot");
 
 
 app.UseHttpsRedirection();
