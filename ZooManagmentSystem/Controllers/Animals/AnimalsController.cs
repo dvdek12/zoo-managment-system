@@ -31,7 +31,7 @@ namespace ZooManagmentSystem.Controllers.Animals
 
         [Route("create")]
         [HttpPost]
-        public async Task<IActionResult> Create(AnimalDto animal)
+        public async Task<IActionResult> Create([FromBody] AnimalDto animal)
         {
             try
             {
@@ -77,7 +77,7 @@ namespace ZooManagmentSystem.Controllers.Animals
         }
 
         [Route("delete")]
-        [HttpGet]
+        [HttpDelete]
         public IActionResult Delete(int id)
         {
             var animal = _context.Animals.Find(id);
