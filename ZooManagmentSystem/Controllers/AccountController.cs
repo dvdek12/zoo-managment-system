@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Data;
@@ -120,6 +121,24 @@ namespace ZooManagmentSystem.Controllers
 
             if (isPasswordValid)
             {
+                // Synchronizacja roli Manager na podstawie flagi IsManagerial w bazie
+                var employee = await _context.Employees
+                    .Include(e => e.Role)
+                    .FirstOrDefaultAsync(e => e.ApplicationUserId == user.Id);
+
+                if (employee?.Role?.IsManagerial == true)
+                {
+                    // Dodaj rolę Manager jeśli jeszcze jej nie ma w Identity
+                    if (!await _userManager.IsInRoleAsync(user, "Manager"))
+                        await _userManager.AddToRoleAsync(user, "Manager");
+                }
+                else
+                {
+                    // Usuń rolę Manager jeśli pracownik nie jest już managerem
+                    if (await _userManager.IsInRoleAsync(user, "Manager"))
+                        await _userManager.RemoveFromRoleAsync(user, "Manager");
+                }
+
                 var roles = await _userManager.GetRolesAsync(user);
                 var token = GenerateJwtToken(user, roles);
                 return Ok(new
