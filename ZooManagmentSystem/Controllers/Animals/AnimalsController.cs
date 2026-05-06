@@ -11,7 +11,7 @@ namespace ZooManagmentSystem.Controllers.Animals
 {
     [ApiController]
     [Route("animals")] 
-    [Authorize(Roles = ("Employee"))]
+    //[Authorize(Roles = ("Employee"))]
     public class AnimalsController : ControllerBase
     {
         private readonly AppDbContext _context;
