@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ZooManagmentSystem.Models.Animal;
 using ZooManagmentSystem.Models.Employee;
 using ZooManagmentSystem.Models.Raport;
 using ZooManagmentSystem.Models.Enums;
 using ZooManagmentSystem.Models.Client;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using ZooManagmentSystem.Models;
 
 namespace ZooManagmentSystem.Data
 {
@@ -54,6 +55,13 @@ namespace ZooManagmentSystem.Data
                 .WithMany(t => t.EntryTypes)
                 .HasForeignKey(te => te.TicketId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<AnimalHistoryModel>()
+                .HasOne(h => h.Animal)
+                .WithMany(a => a.AnimalHistories)
+                .HasForeignKey(h => h.AnimalId)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 
