@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ZooManagmentSystem.Data;
 using ZooManagmentSystem.Models.Employee;
 using ZooManagmentSystem.DTOs.Employee;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ZooManagmentSystem.Controllers.Employees
 {
@@ -23,6 +24,7 @@ namespace ZooManagmentSystem.Controllers.Employees
         }
 
         // GET: api/Employees
+        //[Authorize(Roles = "Manager")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EmployeeModel>>> GetEmployees()
         {
@@ -30,6 +32,7 @@ namespace ZooManagmentSystem.Controllers.Employees
         }
 
         // GET: api/Employees/5
+        //[Authorize(Roles = "Manager")]
         [HttpGet("{id}")]
         public async Task<ActionResult<EmployeeModel>> GetEmployeeModel(int id)
         {
@@ -45,15 +48,82 @@ namespace ZooManagmentSystem.Controllers.Employees
 
         // PUT: api/Employees/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        //[Authorize(Roles = "Employee")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmployeeModel(int id, EmployeeModel employeeModel)
+        public async Task<IActionResult> PutEmployeeModel(int id, UpdateEmployeeDto employeeModel)
         {
             if (id != employeeModel.id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(employeeModel).State = EntityState.Modified;
+            var employee = await _context.Employees.FindAsync(id);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
+            if (employeeModel.FirstName != null)
+                employee.FirstName = employeeModel.FirstName;
+            if (employeeModel.LastName != null)
+                employee.LastName = employeeModel.LastName;
+            if (employeeModel.PhoneNumber != null)
+                employee.PhoneNumber = employeeModel.PhoneNumber;
+            if (employeeModel.BirthDay != null)
+                employee.BirthDay = (DateTime)employeeModel.BirthDay;
+
+            _context.Entry(employee).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!EmployeeModelExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return Ok(new { message = "Profile edited!" });
+        }
+
+        //[Authorize(Roles = "Manager")]
+        [HttpPut("asManager/{id}")]
+        public async Task<IActionResult> PutEmployeeAsManagerModel(int id, UpdateEmployeeManagerDto employeeModel)
+        {
+            if (id != employeeModel.id)
+            {
+                return BadRequest();
+            }
+
+            var employee = await _context.Employees.FindAsync(id);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
+            if (employeeModel.FirstName != null)
+                employee.FirstName = employeeModel.FirstName;
+            if (employeeModel.LastName != null)
+                employee.LastName = employeeModel.LastName;
+            if (employeeModel.PhoneNumber != null)
+                employee.PhoneNumber = employeeModel.PhoneNumber;
+            if (employeeModel.BirthDay != null)
+                employee.BirthDay = (DateTime)employeeModel.BirthDay;
+            if (employeeModel.Email != null)
+                employee.Email = employeeModel.Email;
+            if (employeeModel.RoleId != null)
+                employee.RoleId = employeeModel.RoleId;
+            if (employeeModel.SupervisorId != null)
+                employee.SupervisorId = employeeModel.SupervisorId;
+
+                _context.Entry(employee).State = EntityState.Modified;
 
             try
             {

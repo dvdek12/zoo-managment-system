@@ -88,6 +88,18 @@ namespace ZooManagmentSystem.Controllers
                     LastName = model.LastName,
                     BirthDay = model.BirthDay,
                 };
+                if(model.PhoneNumber != null)
+                {
+                    employee.PhoneNumber = model.PhoneNumber;
+                }
+                if(model.RoleId != null)
+                {
+                    employee.RoleId = model.RoleId;
+                }
+                if(model.SupervisorId != null)
+                {
+                    employee.SupervisorId = model.SupervisorId;
+                }
 
                 _context.Employees.Add(employee);
 

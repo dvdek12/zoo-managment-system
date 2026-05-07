@@ -94,12 +94,13 @@ using (var scope = app.Services.CreateScope())
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
+    /*  Test Employees
     var testEmployees = new[]
     {
         new { Email = "anna.nowak@zoo.pl", First = "Anna", Last = "Nowak", Birth = new DateTime(1988, 3, 10) },
         new { Email = "piotr.wisniewski@zoo.pl", First = "Piotr", Last = "Wiœniewski", Birth = new DateTime(1992, 7, 22) },
     };
+    */
 
     foreach (var role in new[] { "Employee", "Client", "Manager" })
     {
@@ -107,6 +108,7 @@ using (var scope = app.Services.CreateScope())
             await roleManager.CreateAsync(new IdentityRole(role));
     }
 
+    /*  Test Employees
     foreach (var emp in testEmployees)
     {
         if (await userManager.FindByEmailAsync(emp.Email) == null)
@@ -141,6 +143,7 @@ using (var scope = app.Services.CreateScope())
             }
         }
     }
+    */
 }
 
 app.MapHub<GorillaHealthNot>("/gorillaHealthNot");
