@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ZooManagmentSystem.Models.Animal
@@ -14,5 +14,6 @@ namespace ZooManagmentSystem.Models.Animal
         public List<AnimalAttributeModel> Attributes { get; set; } = new List<AnimalAttributeModel>();
         public int? EnclosureId { get; set; }
         public EnclosureModel? Enclosure { get; set; }
+        public ICollection<AnimalHistoryModel> AnimalHistories { get; set; } = new List<AnimalHistoryModel>();
     }
 }
