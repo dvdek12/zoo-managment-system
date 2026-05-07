@@ -1,13 +1,15 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 using ZooManagmentSystem.Data;
 using ZooManagmentSystem.Hubs;
+using ZooManagmentSystem.Models.Employee;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -89,12 +91,59 @@ if (!app.Environment.IsDevelopment())
 
 using (var scope = app.Services.CreateScope())
 {
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    foreach (var role in new[] { "Employee", "Client" })
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    /*  Test Employees
+    var testEmployees = new[]
+    {
+        new { Email = "anna.nowak@zoo.pl", First = "Anna", Last = "Nowak", Birth = new DateTime(1988, 3, 10) },
+        new { Email = "piotr.wisniewski@zoo.pl", First = "Piotr", Last = "Wiœniewski", Birth = new DateTime(1992, 7, 22) },
+    };
+    */
+
+    foreach (var role in new[] { "Employee", "Client", "Manager" })
     {
         if (!await roleManager.RoleExistsAsync(role))
             await roleManager.CreateAsync(new IdentityRole(role));
     }
+
+    /*  Test Employees
+    foreach (var emp in testEmployees)
+    {
+        if (await userManager.FindByEmailAsync(emp.Email) == null)
+        {
+            var user = new ApplicationUser { UserName = emp.Email, Email = emp.Email };
+            var result = await userManager.CreateAsync(user, "Test1234!");
+            if (result.Succeeded)
+            {
+                context.Employees.Add(new EmployeeModel
+                {
+                    ApplicationUserId = user.Id,
+                    Email = emp.Email,
+                    FirstName = emp.First,
+                    LastName = emp.Last,
+                    BirthDay = emp.Birth,
+                });
+                await context.SaveChangesAsync();
+                await userManager.AddToRoleAsync(user, "Employee");
+
+                bool isManager = await context.Employees
+                    .Where(e => e.ApplicationUserId == user.Id)
+                    .Select(e => e.Role.IsManagerial)
+                    .FirstOrDefaultAsync();
+
+                Debug.WriteLine(isManager);
+
+                if (isManager)
+                {
+                    Console.WriteLine(isManager);
+                    await userManager.AddToRoleAsync(user, "Manager");
+                }
+            }
+        }
+    }
+    */
 }
 
 app.MapHub<GorillaHealthNot>("/gorillaHealthNot");

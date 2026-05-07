@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ZooManagmentSystem.ViewModels
+namespace ZooManagmentSystem.DTOs
 {
-    public class RegisterViewModel
+    public class ClientDto
     {
         [Required, StringLength(50)]
         public string FirstName { get; set; }
@@ -14,6 +14,5 @@ namespace ZooManagmentSystem.ViewModels
         public string Email { get; set; }
         [Required, DataType(DataType.Password)]
         public string Password { get; set; }
-        public bool IsEmployee { get; set; }
     }
 }

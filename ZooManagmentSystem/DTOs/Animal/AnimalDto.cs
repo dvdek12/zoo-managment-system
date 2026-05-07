@@ -1,7 +1,7 @@
 ﻿using ZooManagmentSystem.Models;
 using ZooManagmentSystem.Models.Animal;
 
-namespace ZooManagmentSystem.DTOs
+namespace ZooManagmentSystem.DTOs.Animal
 {
     public class AnimalDto
     {
