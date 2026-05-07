@@ -1,12 +1,11 @@
-using ZooManagmentSystem.Enums;
+﻿using ZooManagmentSystem.Enums;
+using ZooManagmentSystem.Models;
 using ZooManagmentSystem.Models.Animal;
 
-namespace ZooManagmentSystem.Models
+namespace ZooManagmentSystem.DTOs.Animal
 {
-    public class AnimalHistoryModel : ModelPrototype
+    public class AnimalHistoryDto
     {
-        public int AnimalId { get; set; }
-        public AnimalModel? Animal { get; set; }
         public AnimalConditionEnum ConditionAdmission { get; set; }
         public float Temperature { get; set; }
         public float Weight { get; set; }

@@ -2,6 +2,7 @@
 {
     public enum AnimalConditionEnum
     {
+        Unknown,
         Critical,
         Healthy,
         Sick,
