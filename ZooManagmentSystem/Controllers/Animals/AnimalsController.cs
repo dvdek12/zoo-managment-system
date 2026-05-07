@@ -6,6 +6,8 @@ using ZooManagmentSystem.Data;
 using ZooManagmentSystem.Models.Animal;
 using ZooManagmentSystem.ViewModels;
 using ZooManagmentSystem.DTOs.Animal;
+using ZooManagmentSystem.Models;
+using ZooManagmentSystem.Enums;
 
 namespace ZooManagmentSystem.Controllers.Animals
 {
@@ -45,7 +47,18 @@ namespace ZooManagmentSystem.Controllers.Animals
                     EnclosureId = animal.EnclosureId
                 };
 
+                var animalHistory = new AnimalHistoryModel
+                {
+                    Animal = newAnimal,
+                    ConditionAdmission = AnimalConditionEnum.Unknown,
+                    Temperature = 0,
+                    Weight = 0,
+                    IsVacinated = false,
+                    DateOfLastCheckup = DateTime.Now
+                };
+
                 _context.Animals.Add(newAnimal);
+                _context.AnimalHistories.Add(animalHistory);
                 await _context.SaveChangesAsync();
                 return Ok(new { message = "Animal added successfuly!" });
             }
@@ -65,6 +78,38 @@ namespace ZooManagmentSystem.Controllers.Animals
             return Ok(animal);
         }
 
+        [HttpGet]
+        [Route("getHistory/{id}")]
+        public IActionResult GetAnimalHistory(int id)
+        {
+            var animalHistory = _context.AnimalHistories
+                .Where(ah => ah.Animal != null && ah.Animal.id == id)
+                .ToList();
+            if (animalHistory == null || animalHistory.Count == 0) return NotFound();
+            return Ok(animalHistory);
+        }
+
+        [HttpPost]
+        [Route("addHistory/{id}")]
+        public IActionResult AddAnimalHistory(int id, AnimalHistoryDto animalHistoryDto)
+        {
+            var animal = _context.Animals.Find(id);
+            if (animal == null) return NotFound();
+            var animalHistory = new AnimalHistoryModel
+            {
+                AnimalId = animal.id,
+                Animal = animal,
+                ConditionAdmission = animalHistoryDto.ConditionAdmission,
+                Temperature = animalHistoryDto.Temperature,
+                Weight = animalHistoryDto.Weight,
+                IsVacinated = animalHistoryDto.IsVacinated,
+                DateOfLastCheckup = animalHistoryDto.DateOfLastCheckup
+            };
+            _context.AnimalHistories.Add(animalHistory);
+            _context.SaveChanges();
+            return Ok(new { message = "Animal history added successfuly!" });
+        }
+
         [HttpPost]
         [Route("edit/{id}")]
         public IActionResult Edit(int id, AnimalModel animal)
@@ -77,7 +122,7 @@ namespace ZooManagmentSystem.Controllers.Animals
         }
 
         [Route("delete")]
-        [HttpGet]
+        [HttpDelete]
         public IActionResult Delete(int id)
         {
             var animal = _context.Animals.Find(id);
