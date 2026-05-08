@@ -88,6 +88,17 @@ namespace ZooManagmentSystem.Controllers.Employees
 
         }
 
+        [HttpDelete]
+        [Route("roles/delete/{id}")]
+        public IActionResult DeleteRole(int id)
+        {
+            var role = _context.Roles.Find(id);
+            if (role == null) return NotFound();        
+            _context.Roles.Remove(role);
+            _context.SaveChanges();
+            return Ok(new { message = "Role deleted successfuly!" });
+        }
+
         // GET: api/Employees/5
         //[Authorize(Roles = "Manager")]
         [HttpGet("{id}")]
