@@ -31,6 +31,63 @@ namespace ZooManagmentSystem.Controllers.Employees
             return Ok( await _context.Employees.ToListAsync());
         }
 
+        [HttpGet]
+        [Route("getAllRoles")]
+        public IActionResult GetAllRoles()
+        {
+            var roles = _context.Roles.Select(r => new
+            {
+                r.id,
+                r.Name,
+                r.Description,
+                r.IsManagerial
+            }).ToList();
+            return Ok(roles);
+        }
+
+        [HttpGet]
+        [Route("{id}/role")]
+        public IActionResult GetEmployeeRole(int id)
+        {
+            var roleId = _context.Employees.Where(e => e.id == id).Select(e => e.RoleId).FirstOrDefault();
+            var role = _context.Roles.Where(r => r.id == roleId).Select(r => new
+            {
+                r.id,
+                r.Name,
+                r.Description,
+                r.IsManagerial
+            }).FirstOrDefault();
+            if (role == null)
+            {
+                return NotFound();
+            }
+            return Ok(role);
+        }
+
+        [HttpPost]
+        [Route("roles/new")]
+        public IActionResult AddNewRole([FromBody] RoleDto roleDto)
+        {
+            var isExists = _context.Roles.Any(r => r.Name == roleDto.Name);
+
+            if (!isExists)
+            {
+                var newRole = new RoleModel
+                {
+                    Name = roleDto.Name,
+                    Description = roleDto.Description,
+                    IsManagerial = roleDto.IsManagerial
+                };
+
+                _context.Roles.Add(newRole);
+                _context.SaveChanges();
+                return Ok(new { message = "New role added successfuly!" });
+            }
+
+            return BadRequest();
+
+        }
+
         // GET: api/Employees/5
         //[Authorize(Roles = "Manager")]
         [HttpGet("{id}")]
