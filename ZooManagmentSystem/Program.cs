@@ -3,13 +3,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.SwaggerUI;
+using System.Diagnostics;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 using ZooManagmentSystem.Data;
 using ZooManagmentSystem.Hubs;
 using ZooManagmentSystem.Models.Employee;
-using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -147,6 +148,10 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.MapHub<GorillaHealthNot>("/gorillaHealthNot");
+
+app.UseSwaggerUI(options => {
+    options.DocExpansion(DocExpansion.None); // wszystko zwiniête
+});
 
 
 app.UseHttpsRedirection();
