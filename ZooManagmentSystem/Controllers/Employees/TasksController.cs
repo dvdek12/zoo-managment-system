@@ -45,6 +45,34 @@ namespace ZooManagmentSystem.Controllers.Employees
             return Ok(taskModel);
         }
 
+        // GET: api/Tasks/5
+        [Route("getForEmployee/{id}")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TaskModel>>> GetTasksForEmployee(int id)
+        {
+            var employeeTasks = await _context.Tasks.Where(t => t.AssignedEmployeeId == id).ToListAsync();
+
+            if (employeeTasks == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(employeeTasks);
+        }
+
+        [Route("getForRole/{id}")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TaskModel>>> GetTasksForRole(int id)
+        {
+            var roleTasks = await _context.Tasks.Where(t => t.RoleId == id).ToListAsync();
+            if (roleTasks == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(roleTasks);
+        }
+
         // PUT: api/Tasks/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("update/{id}")]
