@@ -15,7 +15,7 @@ namespace ZooManagmentSystem.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return Redirect("/swagger");
         }
 
         public IActionResult Privacy()

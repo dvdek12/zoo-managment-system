@@ -14,7 +14,24 @@ namespace ZooManagmentSystem.DTOs.Employee
         public string Description { get; set; }
         [Required]
         public DateTime Deadline { get; set; }
-        public bool IsCompleted { get; set; }
+        public bool IsCompleted { get; set; } = false;
+        public TaskCategoriesEnum? Category { get; set; }
+
+        // Assaignment details
+        public int? AssignedEmployeeId { get; set; }
+        public int? RoleId { get; set; }
+
+        // Optional animals or enclosures related to the task
+        public int? EnclosureId { get; set; }
+        public int? AnimalId { get; set; }
+    }
+
+    public class TaskUpdateDto
+    {
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+        public DateTime? Deadline { get; set; }
+        public bool? IsCompleted { get; set; }
         public TaskCategoriesEnum? Category { get; set; }
 
         // Assaignment details
