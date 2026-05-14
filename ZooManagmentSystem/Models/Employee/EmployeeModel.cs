@@ -17,5 +17,7 @@ namespace ZooManagmentSystem.Models.Employee
 
         public string ApplicationUserId { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
+        public int IconId { get; set; }
+        public IconModel? Icon { get; set; }
     }
 }
