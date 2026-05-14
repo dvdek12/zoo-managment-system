@@ -17,7 +17,7 @@ namespace ZooManagmentSystem.Controllers
         [HttpPost("Upload")]
         public async Task<IActionResult> Upload(IFormFile file)
         {
-            if(file == null || file.Length == 0) return BadRequest("No file uploaded.");
+            if (file == null || file.Length == 0) return BadRequest("No file uploaded.");
 
             using var stream = new MemoryStream();
             await file.CopyToAsync(stream);
@@ -32,8 +32,16 @@ namespace ZooManagmentSystem.Controllers
             _context.Icons.Add(icon);
             await _context.SaveChangesAsync();
 
-            return Ok(new {icon.id, message = "Icon uploaded successfully!"});
+            return Ok(new { icon.id, message = "Icon uploaded successfully!" });
 
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetIcon(int id)
+        {
+            var icon = await _context.Icons.FindAsync(id);
+            if (icon == null) return NotFound();
+            return File(icon.ImageData, icon.ContentType);
         }
     }
 }
