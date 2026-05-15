@@ -87,7 +87,7 @@ namespace ZooManagmentSystem.Controllers.Employees
 
             existingTask.Name = taskModel.Name ?? existingTask.Name;
             existingTask.Description = taskModel.Description ?? existingTask.Description;
-            existingTask.Category = taskModel.Category ?? existingTask.Category;
+            existingTask.CategoryId = taskModel.CategoryId ?? existingTask.CategoryId;
             existingTask.AssignedEmployeeId = taskModel.AssignedEmployeeId ?? existingTask.AssignedEmployeeId;
             existingTask.RoleId = taskModel.RoleId ?? existingTask.RoleId;
             existingTask.EnclosureId = taskModel.EnclosureId ?? existingTask.EnclosureId;
@@ -131,7 +131,7 @@ namespace ZooManagmentSystem.Controllers.Employees
                 Description = taskModel.Description,
                 Deadline = taskModel.Deadline,
                 IsCompleted = taskModel.IsCompleted,
-                Category = taskModel.Category,
+                CategoryId = taskModel.CategoryId,
                 AssignedEmployeeId = taskModel.AssignedEmployeeId,
                 RoleId = taskModel.RoleId,
                 EnclosureId = taskModel.EnclosureId,

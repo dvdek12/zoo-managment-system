@@ -3,6 +3,7 @@ using ZooManagmentSystem.Enums;
 using ZooManagmentSystem.Models;
 using ZooManagmentSystem.Models.Animal;
 using ZooManagmentSystem.Models.Employee;
+using ZooManagmentSystem.Models.Enums;
 
 namespace ZooManagmentSystem.DTOs.Employee
 {
@@ -15,7 +16,7 @@ namespace ZooManagmentSystem.DTOs.Employee
         [Required]
         public DateTime Deadline { get; set; }
         public bool IsCompleted { get; set; } = false;
-        public TaskCategoriesEnum? Category { get; set; }
+        public int? CategoryId { get; set; }
 
         // Assaignment details
         public int? AssignedEmployeeId { get; set; }
@@ -32,7 +33,7 @@ namespace ZooManagmentSystem.DTOs.Employee
         public string? Description { get; set; }
         public DateTime? Deadline { get; set; }
         public bool? IsCompleted { get; set; }
-        public TaskCategoriesEnum? Category { get; set; }
+        public int? CategoryId { get; set; }
 
         // Assaignment details
         public int? AssignedEmployeeId { get; set; }

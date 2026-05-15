@@ -2,6 +2,6 @@
 {
     public class TaskCategoryModel : ModelPrototype
     {
-        public string CategoryName { get; set; }
+        public string Category { get; set; }
     }
 }

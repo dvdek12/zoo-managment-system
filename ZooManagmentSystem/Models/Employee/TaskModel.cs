@@ -1,5 +1,7 @@
 ﻿using ZooManagmentSystem.Enums;
 using ZooManagmentSystem.Models.Animal;
+using ZooManagmentSystem.Models.Dictionaries;
+using ZooManagmentSystem.Models.Enums;
 
 namespace ZooManagmentSystem.Models.Employee
 {
@@ -10,7 +12,8 @@ namespace ZooManagmentSystem.Models.Employee
         public string Description { get; set; }
         public DateTime Deadline { get; set; }
         public bool IsCompleted { get; set; }
-        public TaskCategoriesEnum? Category { get; set; }
+        public int? CategoryId { get; set; }
+        public TaskCategoryModel? Category { get; set; }
 
         // Assaignment details
         public int? AssignedEmployeeId { get; set; }
