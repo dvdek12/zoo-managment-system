@@ -109,6 +109,40 @@ namespace ZooManagmentSystem.Controllers.Clients
             return Ok(new { message = "Ticket deleted successfully!" });
         }
 
+        [Route("entryType")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<EntryTypeModel>>> GetEntryTypes()
+        {
+            return Ok(await _context.EntryTypes.ToListAsync());
+        }
+
+        [Route("entryType/new")]
+        [HttpPost]
+        public async Task<ActionResult<EntryTypeModel>> CreateEntryType(EntryTypeModel entryTypeModel)
+        {
+            _context.EntryTypes.Add(entryTypeModel);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Created entry type successfully!" });
+        }
+
+        [Route("entryType/delete/{id}")]
+        [HttpDelete()]
+        public async Task<IActionResult> DeleteEntryType(int id)
+        {
+            var entryTypeModel = await _context.EntryTypes.FindAsync(id);
+            if (entryTypeModel == null)
+            {
+                return NotFound();
+            }
+
+            _context.EntryTypes.Remove(entryTypeModel);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Entry type deleted successfully!" });
+        }
+
+
         private bool TicketModelExists(int id)
         {
             return _context.Tickets.Any(e => e.id == id);

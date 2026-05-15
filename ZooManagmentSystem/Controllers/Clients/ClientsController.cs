@@ -95,7 +95,7 @@ namespace ZooManagmentSystem.Controllers.Clients
                 }
             }
 
-            return Ok(new { message = ""});
+            return Ok(new { message = "Updated client."});
         }
 
 
