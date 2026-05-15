@@ -38,7 +38,7 @@ namespace ZooManagmentSystem.Controllers
         // POST: /Account/Register
         [Route("Register")]
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] ClientDto model)
+        public async Task<IActionResult> Register([FromBody] ClientRegisterDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

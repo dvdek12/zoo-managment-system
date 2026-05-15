@@ -74,7 +74,7 @@ namespace ZooManagmentSystem.Controllers.Animals
         [Route("getOne/{id}")]
         public IActionResult GetOne(int id)
         {
-            var animal = _context.Animals.Find(id);
+            var animal = _context.Animals.Include(a => a.Attributes).FirstOrDefault(a => a.id == id);
             if (animal == null) return NotFound();
             return Ok(animal);
         }
