@@ -11,5 +11,6 @@ namespace ZooManagmentSystem.DTOs.Animal
         public string? Origin { get; set; }
         public DateTime? DateOfArrival { get; set; }
         public int? EnclosureId { get; set; }
+        public int? IconId { get; set; }
     }
 }

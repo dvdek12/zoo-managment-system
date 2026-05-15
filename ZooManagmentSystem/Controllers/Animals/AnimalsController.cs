@@ -44,7 +44,8 @@ namespace ZooManagmentSystem.Controllers.Animals
                     Description = animal.Description,
                     Origin = animal.Origin,
                     DateOfArrival = animal.DateOfArrival,
-                    EnclosureId = animal.EnclosureId
+                    EnclosureId = animal.EnclosureId,
+                    IconId = animal.IconId
                 };
 
                 var animalHistory = new AnimalHistoryModel

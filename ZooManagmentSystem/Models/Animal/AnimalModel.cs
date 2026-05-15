@@ -15,5 +15,8 @@ namespace ZooManagmentSystem.Models.Animal
         public int? EnclosureId { get; set; }
         public EnclosureModel? Enclosure { get; set; }
         public ICollection<AnimalHistoryModel> AnimalHistories { get; set; } = new List<AnimalHistoryModel>();
+
+        public int? IconId { get; set; }
+        public IconModel? Icon { get; set; }
     }
 }

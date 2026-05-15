@@ -87,6 +87,7 @@ namespace ZooManagmentSystem.Controllers
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     BirthDay = model.BirthDay,
+                    IconId = model.IconId
                 };
                 if(model.PhoneNumber != null)
                 {

@@ -17,6 +17,7 @@ namespace ZooManagmentSystem.DTOs.Employee
         public string? PhoneNumber { get; set; }
         public int? SupervisorId { get; set; }
         public int? RoleId { get; set; }
+        public int? IconId { get; set; }
 
 
         [Required, DataType(DataType.Password)]
