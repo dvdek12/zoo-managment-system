@@ -5,6 +5,7 @@
         public string Name { get; set; }
         public string Description { get; set; }
         public int? TypeId { get; set; }
+        public string? MapKey { get; set; }
     }
 
     public class EnclosureUpdateDto
@@ -12,5 +13,6 @@
         public string? Name { get; set; }
         public string? Description { get; set; }
         public int? TypeId { get; set; }
+        public string? MapKey { get; set; }
     }
 }
