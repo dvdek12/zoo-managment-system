@@ -28,7 +28,11 @@ namespace ZooManagmentSystem.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EnclosureModel>>> GetEnclosures()
         {
-            return Ok(await _context.Enclosures.ToListAsync());
+            var enclosures = await _context.Enclosures
+                .Include(e => e.Type)
+                .Include(e => e.Animals)
+                .ToListAsync();
+            return Ok(enclosures);
         }
 
         // GET: api/Enclosures/5
@@ -61,6 +65,11 @@ namespace ZooManagmentSystem.Controllers
             if (enclosureModel.Name != null)
             {
                 existingEnclosure.Name = enclosureModel.Name;
+            }
+
+            if (enclosureModel.MapKey != null)
+            {
+                existingEnclosure.MapKey = enclosureModel.MapKey;
             }
 
             if (enclosureModel.Description != null)
@@ -104,7 +113,8 @@ namespace ZooManagmentSystem.Controllers
             {
                 Name = enclosureModel.Name,
                 Description = enclosureModel.Description,
-                TypeId = enclosureModel.TypeId
+                TypeId = enclosureModel.TypeId,
+                MapKey = enclosureModel.MapKey,
             };
 
             _context.Enclosures.Add(newEnclosure);
@@ -180,6 +190,41 @@ namespace ZooManagmentSystem.Controllers
                 }
             }
             return Ok(new { message = "Updated enclosure type." });
+        }
+
+        [Route("{EnclosureId}/assignAnimal/{AnimalId}")]
+        [HttpPut]
+        public async Task<IActionResult> AssignAnimal(int EnclosureId, int AnimalId)
+        {
+            var enclosure = await _context.Enclosures
+                .FirstOrDefaultAsync(e => e.id == EnclosureId);
+            if (enclosure == null)
+                return NotFound(new { message = "Enclosure not found." });
+
+            var animal = await _context.Animals
+                .FirstOrDefaultAsync(a => a.id == AnimalId);
+
+            if (animal == null)
+                return NotFound(new { message = "Animal not found." });
+
+            animal.EnclosureId = EnclosureId;
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Animal has been assigned successfully." });
+        }
+
+        [Route("{EnclosureId}/assignAnimal/{AnimalId}")]
+        [HttpDelete]
+        public async Task<IActionResult> UnassignAnimal(int EnclosureId, int AnimalId)
+        {
+            var animal = await _context.Animals
+                .FirstOrDefaultAsync(a => a.id == AnimalId && a.EnclosureId == EnclosureId);
+
+            if (animal == null)
+                return NotFound(new { message = "Zwierzę nie jest przypisane do tego wybiegu." });
+
+            animal.EnclosureId = null;
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Zwierzę zostało odpięte od wybiegu." });
         }
 
 

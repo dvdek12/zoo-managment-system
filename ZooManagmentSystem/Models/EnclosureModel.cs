@@ -10,5 +10,8 @@ namespace ZooManagmentSystem.Models
         public int? TypeId { get; set; }
         public EnclosureTypeModel? Type { get; set; }
         public List<AnimalModel>? Animals { get; set; }
+
+        // łącznik między wybiegiem a mapa na froncie
+        public string? MapKey { get; set; }
     }
 }
