@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ZooManagmentSystem.Data;
 using ZooManagmentSystem.Models.Animal;
 using ZooManagmentSystem.DTOs.Animal;
+using System.Runtime.InteropServices;
 
 namespace ZooManagmentSystem.Controllers.Animals
 {
@@ -24,17 +25,32 @@ namespace ZooManagmentSystem.Controllers.Animals
 
         // GET: Animal/Attributes/
         [HttpGet("{id}")]
-        public async Task<ActionResult<IEnumerable<AnimalAttributeModel>>> GetAnimalAttributes()
+        public async Task<ActionResult<AttributesForAnimalDto>> GetAnimalAttributes(int id)
         {
-            var animalAttributes = await _context.AnimalAttributes.ToListAsync();
-            return Ok(await _context.AnimalAttributes.ToListAsync());
+            var animalAttribute = await _context.AnimalAttributes.FindAsync(id);
+            if (animalAttribute == null)
+            {
+                return NotFound();
+            }
+
+            var attributeInfo = await _context.Attributes.FindAsync(animalAttribute.AttributeId);
+            string attributeName = attributeInfo != null ? attributeInfo.AttributeName : "Unknown Attribute";
+
+            var animalAttributeDto = new AttributesForAnimalDto
+            {
+                Id = animalAttribute.id,
+                Name = attributeName,
+                Value = animalAttribute.AttributeValue
+            };
+
+            return Ok(animalAttributeDto);
         }
 
         // GET: Animal/Attribute/5
         // Get all attributes for a specific animal
         [Route("/forAnimal/{id}")]
         [HttpGet]
-        public async Task<ActionResult<AnimalAttributeModel>> GetAnimalAttributeModel(int id)
+        public async Task<ActionResult<IEnumerable<AttributesForAnimalDto>>> GetAnimalAttributeModel(int id)
         {
             var animalAttributeModel = await _context.AnimalAttributes.Where(t => t.AnimalId == id).ToListAsync();
 
@@ -43,30 +59,50 @@ namespace ZooManagmentSystem.Controllers.Animals
                 return NotFound();
             }
 
-            Dictionary<string, string> attributeDetails = new Dictionary<string, string>();
+            var attributeDetails = new List<AttributesForAnimalDto>();
 
             foreach (var attribute in animalAttributeModel)
             {
                 var attributeInfo = await _context.Attributes.FindAsync(attribute.AttributeId);
                 if (attributeInfo != null)
                 {
-                    attributeDetails.Add(attributeInfo.AttributeName, attribute.AttributeValue);
+                    attributeDetails.Add(new AttributesForAnimalDto
+                    {
+                        Id = attribute.id,
+                        Name = attributeInfo.AttributeName,
+                        Value = attribute.AttributeValue
+                    });
+                }
+                else
+                {
+                    attributeDetails.Add(new AttributesForAnimalDto
+                    {
+                        Id = attribute.AttributeId,
+                        Name = "Unknown Attribute",
+                        Value = attribute.AttributeValue
+                    });
                 }
             }
-                return Ok( new { animalAttributes = animalAttributeModel, details = attributeDetails });
+                return Ok(attributeDetails);
         }
 
         // PUT: Animal/Attribute/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAnimalAttributeModel(int id, AnimalAttributeModel animalAttributeModel)
+        public async Task<IActionResult> PutAnimalAttributeModel(int id, AnimalAttributeUpdateDto animalAttributeModel)
         {
-            if (id != animalAttributeModel.id)
+            if (id != animalAttributeModel.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(animalAttributeModel).State = EntityState.Modified;
+            var existingAnimalAttribute = await _context.AnimalAttributes.FindAsync(id);
+            if (existingAnimalAttribute == null)
+            {
+                return NotFound();
+            }
+
+            existingAnimalAttribute.AttributeValue = animalAttributeModel.Value;
 
             try
             {
@@ -117,7 +153,7 @@ namespace ZooManagmentSystem.Controllers.Animals
             _context.AnimalAttributes.Remove(animalAttributeModel);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(new { message = "Animal attribute deleted successfully!" });
         }
 
         private bool AnimalAttributeModelExists(int id)
