@@ -46,6 +46,9 @@ namespace ZooManagmentSystem.Data
         public DbSet<FoodTypeModel> FoodTypes { get; set; }
         public DbSet<TaskCategoryModel> TaskCategories { get; set; }
 
+        // Icon
+        public DbSet<IconModel> Icons { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
