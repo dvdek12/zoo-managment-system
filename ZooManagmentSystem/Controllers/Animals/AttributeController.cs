@@ -13,11 +13,11 @@ namespace ZooManagmentSystem.Controllers.Animals
 {
     [Route("attributes")]
     [ApiController]
-    public class AttributeModelsController : ControllerBase
+    public class AttributeController : ControllerBase
     {
         private readonly AppDbContext _context;
 
-        public AttributeModelsController(AppDbContext context)
+        public AttributeController(AppDbContext context)
         {
             _context = context;
         }

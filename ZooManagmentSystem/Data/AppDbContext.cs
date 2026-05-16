@@ -6,6 +6,7 @@ using ZooManagmentSystem.Models.Enums;
 using ZooManagmentSystem.Models.Client;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using ZooManagmentSystem.Models;
+using ZooManagmentSystem.Models.Dictionaries;
 
 namespace ZooManagmentSystem.Data
 {
@@ -39,8 +40,8 @@ namespace ZooManagmentSystem.Data
         public DbSet<TicketEntryTypeModel> TicketEntryTypes { get; set; }
         public DbSet<EntryTypeModel> EntryTypes { get; set; }
 
-        // Enums
-        public DbSet<AnimalBreedModel> AnimalBreeds { get; set; }
+        // Dictionaries
+        public DbSet<AnimalConditionModel> AnimalConditions { get; set; }
         public DbSet<AnimalTypeModel> AnimalType { get; set; }
         public DbSet<EnclosureTypeModel> EnclosureTypes { get; set; }
         public DbSet<FoodTypeModel> FoodTypes { get; set; }

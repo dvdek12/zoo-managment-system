@@ -51,7 +51,7 @@ namespace ZooManagmentSystem.Controllers.Animals
                 var animalHistory = new AnimalHistoryModel
                 {
                     Animal = newAnimal,
-                    ConditionAdmission = AnimalConditionEnum.Unknown,
+                    ConditionId = 0,
                     Temperature = 0,
                     Weight = 0,
                     IsVacinated = false,
@@ -92,7 +92,7 @@ namespace ZooManagmentSystem.Controllers.Animals
 
         [HttpPost]
         [Route("addHistory/{id}")]
-        public IActionResult AddAnimalHistory(int id, AnimalHistoryDto animalHistoryDto)
+        public IActionResult AddAnimalHistory(int id, AnimalHistoryCreateDto animalHistoryDto)
         {
             var animal = _context.Animals.Find(id);
             if (animal == null) return NotFound();
@@ -100,7 +100,7 @@ namespace ZooManagmentSystem.Controllers.Animals
             {
                 AnimalId = animal.id,
                 Animal = animal,
-                ConditionAdmission = animalHistoryDto.ConditionAdmission,
+                ConditionId = animalHistoryDto.ConditionId,
                 Temperature = animalHistoryDto.Temperature,
                 Weight = animalHistoryDto.Weight,
                 IsVacinated = animalHistoryDto.IsVacinated,

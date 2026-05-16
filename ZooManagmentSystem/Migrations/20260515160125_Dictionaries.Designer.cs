@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ZooManagmentSystem.Data;
 
@@ -11,9 +12,11 @@ using ZooManagmentSystem.Data;
 namespace ZooManagmentSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260515160125_Dictionaries")]
+    partial class Dictionaries
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -458,8 +461,6 @@ namespace ZooManagmentSystem.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("id");
-
-                    b.HasIndex("ClientId");
 
                     b.ToTable("Tickets");
                 });
@@ -965,17 +966,6 @@ namespace ZooManagmentSystem.Migrations
                     b.Navigation("Ticket");
                 });
 
-            modelBuilder.Entity("ZooManagmentSystem.Models.Client.TicketModel", b =>
-                {
-                    b.HasOne("ZooManagmentSystem.Models.Client.ClientModel", "Client")
-                        .WithMany("Tickets")
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Client");
-                });
-
             modelBuilder.Entity("ZooManagmentSystem.Models.Employee.EmployeeModel", b =>
                 {
                     b.HasOne("ZooManagmentSystem.Data.ApplicationUser", "ApplicationUser")
@@ -1098,11 +1088,6 @@ namespace ZooManagmentSystem.Migrations
                     b.Navigation("AnimalHistories");
 
                     b.Navigation("Attributes");
-                });
-
-            modelBuilder.Entity("ZooManagmentSystem.Models.Client.ClientModel", b =>
-                {
-                    b.Navigation("Tickets");
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.Client.TicketModel", b =>

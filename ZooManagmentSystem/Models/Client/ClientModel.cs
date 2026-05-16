@@ -11,6 +11,8 @@ namespace ZooManagmentSystem.Models.Client
         public string Email { get; set; }
         public string? PhoneNumber { get; set; }
 
+        public List<TicketModel> Tickets { get; set; }
+
         public string ApplicationUserId { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
     }
