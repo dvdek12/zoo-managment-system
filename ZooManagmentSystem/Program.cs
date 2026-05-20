@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using QuestPDF.Infrastructure;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -108,6 +109,11 @@ using (var scope = app.Services.CreateScope())
         if (!await roleManager.RoleExistsAsync(role))
             await roleManager.CreateAsync(new IdentityRole(role));
     }
+
+    // Set QuestPDF license
+    QuestPDF.Settings.License = LicenseType.Community;
+
+
 
     /*  Test Employees
     foreach (var emp in testEmployees)

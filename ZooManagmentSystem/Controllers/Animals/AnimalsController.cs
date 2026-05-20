@@ -7,7 +7,6 @@ using ZooManagmentSystem.Models.Animal;
 using ZooManagmentSystem.ViewModels;
 using ZooManagmentSystem.DTOs.Animal;
 using ZooManagmentSystem.Models;
-using ZooManagmentSystem.Enums;
 
 namespace ZooManagmentSystem.Controllers.Animals
 {

@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using ZooManagmentSystem.Models.Animal;
 using ZooManagmentSystem.Models.Employee;
-using ZooManagmentSystem.Models.Raport;
 using ZooManagmentSystem.Models.Enums;
 using ZooManagmentSystem.Models.Client;
+using ZooManagmentSystem.Models.Report;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using ZooManagmentSystem.Models;
 using ZooManagmentSystem.Models.Dictionaries;
@@ -29,10 +29,8 @@ namespace ZooManagmentSystem.Data
         public DbSet<TaskModel> Tasks { get; set; }
         public DbSet<RoleModel> Roles { get; set; }
 
-        //Raports
-        public DbSet<FeedingPlanRaportModel> FeedingPlanRaports { get; set; }
-        public DbSet<AnimalHistoryRaportModel> AnimalHistoryRaports { get; set; }
-        public DbSet<WorkFlowRaportModel> WorkFlowRaports { get; set; }
+        //Reports
+        public DbSet<ReportModel> Reports { get; set; }
 
         // Clients
         public DbSet<ClientModel> Clients { get; set; }
