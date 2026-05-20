@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using ZooManagmentSystem.Enums;
 using ZooManagmentSystem.Models;
 using ZooManagmentSystem.Models.Animal;
 using ZooManagmentSystem.Models.Employee;

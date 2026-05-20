@@ -64,6 +64,18 @@ namespace ZooManagmentSystem.Controllers
             });
         }
 
+        [Route("types")]
+        [HttpGet]
+        public ActionResult<IEnumerable<object>> GetReportTypes()
+        {
+            var types = Enum.GetValues(typeof(ReportType))
+                .Cast<ReportType>()
+                .Select(t => new { Id = (int)t, Name = t.ToString() })
+                .ToList();
+
+            return Ok(types);
+        }
+
 
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Route("new/forManager")]
@@ -289,4 +301,6 @@ namespace ZooManagmentSystem.Controllers
             return dto;
         }
     }
+
+    
 }

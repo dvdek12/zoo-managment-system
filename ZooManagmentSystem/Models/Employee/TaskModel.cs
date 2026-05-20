@@ -1,5 +1,4 @@
-﻿using ZooManagmentSystem.Enums;
-using ZooManagmentSystem.Models.Animal;
+﻿using ZooManagmentSystem.Models.Animal;
 using ZooManagmentSystem.Models.Dictionaries;
 using ZooManagmentSystem.Models.Enums;
 
