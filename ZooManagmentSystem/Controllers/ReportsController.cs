@@ -33,6 +33,7 @@ namespace ZooManagmentSystem.Controllers
             var reports = await _context.Reports
             .Select(r => new ReportDto
             {
+                Id = r.id,
                 Title = r.Title,
                 Content = r.Content,
                 Type = r.Type,

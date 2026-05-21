@@ -5,6 +5,7 @@ namespace ZooManagmentSystem.DTOs.Reports
 {
     public class ReportDto
     {
+        public int Id { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
         public ReportType Type { get; set; }
