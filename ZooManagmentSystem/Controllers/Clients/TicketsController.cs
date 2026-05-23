@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Update;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ZooManagmentSystem.Data;
 using ZooManagmentSystem.DTOs;
 using ZooManagmentSystem.Models.Client;
@@ -24,19 +25,22 @@ namespace ZooManagmentSystem.Controllers.Clients
         }
 
         // GET: tickets
-        
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TicketsAllDto>>> GetTickets()
+        public async Task<ActionResult<IEnumerable<TicketDto>>> GetTickets()
         {
             var tickets = await _context.Tickets.Include(t => t.EntryTypes).ToListAsync();
-            var ticketList = new List<TicketsAllDto>();
+            var ticketList = new List<TicketDto>();
 
             foreach (var ticket in tickets)
             {
-                var ticketDto = new TicketsAllDto
+                var ticketDto = new TicketDto
                 {
                     Id = ticket.id,
                     ClientId = ticket.ClientId,
+                    PurchaseDate = ticket.PurchaseDate,
+                    ValidUntil = ticket.ValidUntil,
+                    Price = ticket.Price,
+                    EntryTypes = new Dictionary<string, int>()
                 };
                 foreach (var entry in ticket.EntryTypes)
                 {
@@ -51,7 +55,7 @@ namespace ZooManagmentSystem.Controllers.Clients
             
         // GET: /tickets/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TicketDetailsDto>> GetTicket(int id)
+        public async Task<ActionResult<TicketDto>> GetTicket(int id)
         {
             var ticketModel = await _context.Tickets.Include(t => t.EntryTypes).FirstOrDefaultAsync(t => t.id == id);
 
@@ -60,8 +64,9 @@ namespace ZooManagmentSystem.Controllers.Clients
                 return NotFound();
             }
 
-            var ticketDetails = new TicketDetailsDto
+            var ticketDetails = new TicketDto
             {
+                Id = ticketModel.id,
                 ClientId = ticketModel.ClientId,
                 PurchaseDate = ticketModel.PurchaseDate,
                 ValidUntil = ticketModel.ValidUntil,
@@ -79,7 +84,7 @@ namespace ZooManagmentSystem.Controllers.Clients
 
         // GET: /tickets/forClient/5
         [HttpGet("forClient/{clientId}")]
-        public async Task<ActionResult<IEnumerable<TicketsForClientDto>>> GetTicketsForClient(int clientId)
+        public async Task<ActionResult<IEnumerable<TicketDto>>> GetTicketsForClient(int clientId)
         {
             var tickets = await _context.Tickets
                 .Where(t => t.ClientId == clientId)
@@ -91,13 +96,18 @@ namespace ZooManagmentSystem.Controllers.Clients
                 return NotFound();
             }
 
-            var ticketList = new List<TicketsAllDto>();
+            var ticketList = new List<TicketDto>();
 
             foreach(TicketModel ticket in tickets)
             {
-                var ticketDto = new TicketsAllDto
+                var ticketDto = new TicketDto
                 {
                     Id = ticket.id,
+                    ClientId = ticket.ClientId,
+                    PurchaseDate = ticket.PurchaseDate,
+                    Price = ticket.Price,
+                    ValidUntil = ticket.ValidUntil,
+                    EntryTypes = new Dictionary<string, int>()
                 };
                 foreach (TicketEntryTypeModel entry in ticket.EntryTypes)
                 {
@@ -111,9 +121,8 @@ namespace ZooManagmentSystem.Controllers.Clients
         }
 
         // POST: tickets
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<TicketModel>> CreateTicket(TicketDto ticketModel)
+        public async Task<ActionResult<TicketModel>> CreateTicket(TicketNewDto ticketModel)
         {
             var entryTypesIds = ticketModel.EntryTypeIds.Select(et => et.Key).ToList();
             var entryTypes = await _context.EntryTypes
@@ -165,7 +174,7 @@ namespace ZooManagmentSystem.Controllers.Clients
             return Ok(await _context.EntryTypes.ToListAsync());
         }
 
-        [Route("entryType/new")]
+        [Route("entryType")]
         [HttpPost]
         public async Task<ActionResult<EntryTypeModel>> CreateEntryType(EntryTypeModel entryTypeModel)
         {
@@ -175,7 +184,28 @@ namespace ZooManagmentSystem.Controllers.Clients
             return Ok(new { message = "Created entry type successfully!" });
         }
 
-        [Route("entryType/delete/{id}")]
+        [Route("entryType/{id}")]
+        [HttpPut]
+        public async Task<ActionResult<EntryTypeModel>> UpdateEntryType(int id,EntryTypeModel entryTypeModel)
+        {
+            var existingEntry = await _context.EntryTypes.FindAsync(id);
+            if(existingEntry == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                existingEntry.TypeName = entryTypeModel.TypeName;
+                existingEntry.Price = entryTypeModel.Price;
+            }
+
+            _context.EntryTypes.Update(existingEntry);   
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Updated entry type successfully!" });
+        }
+
+        [Route("entryType/{id}")]
         [HttpDelete()]
         public async Task<IActionResult> DeleteEntryType(int id)
         {
