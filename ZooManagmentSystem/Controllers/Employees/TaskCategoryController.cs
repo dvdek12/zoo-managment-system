@@ -22,7 +22,7 @@ namespace ZooManagmentSystem.Controllers.Employees
             _context = context;
         }
 
-        [Route("getAll")]
+        [Route("")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskCategoryModel>>> GetTaskCategories()
         {
@@ -30,7 +30,7 @@ namespace ZooManagmentSystem.Controllers.Employees
         }
 
 
-        [Route("getOne/{id}")]
+        [Route("{id}")]
         [HttpGet]
         public async Task<ActionResult<TaskCategoryModel>> GetTaskCategoryModel(int id)
         {
@@ -79,7 +79,7 @@ namespace ZooManagmentSystem.Controllers.Employees
         */
 
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Route("new")]
+        [Route("")]
         [HttpPost]
         public async Task<ActionResult<TaskCategoryModel>> PostTaskCategoryModel(TaskCategoryModel taskCategoryModel)
         {
@@ -89,7 +89,7 @@ namespace ZooManagmentSystem.Controllers.Employees
             return Ok(new { message = "Task category created successfully!" });
         }
 
-        [Route("delete/{id}")]
+        [Route("{id}")]
         [HttpDelete]
         public async Task<IActionResult> DeleteTaskCategoryModel(int id)
         {

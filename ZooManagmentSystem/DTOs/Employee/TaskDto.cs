@@ -6,7 +6,7 @@ using ZooManagmentSystem.Models.Enums;
 
 namespace ZooManagmentSystem.DTOs.Employee
 {
-    public class TaskDto
+    public class TaskCreateDto
     {
         [Required]
         public string Name { get; set; }
@@ -21,6 +21,22 @@ namespace ZooManagmentSystem.DTOs.Employee
         public int? AssignedEmployeeId { get; set; }
         public int? RoleId { get; set; }
 
+        // Optional animals or enclosures related to the task
+        public int? EnclosureId { get; set; }
+        public int? AnimalId { get; set; }
+    }
+
+    public class TaskDto 
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public DateTime Deadline { get; set; }
+        public bool IsCompleted { get; set; }
+        public int? CategoryId { get; set; }
+        // Assaignment details
+        public int? AssignedEmployeeId { get; set; }
+        public int? RoleId { get; set; }
         // Optional animals or enclosures related to the task
         public int? EnclosureId { get; set; }
         public int? AnimalId { get; set; }

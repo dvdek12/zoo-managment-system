@@ -22,60 +22,112 @@ namespace ZooManagmentSystem.Controllers.Employees
             _context = context;
         }
 
-        // GET: api/Tasks
-        [Route("getAll")]
+        // GET: task
+        [Route("")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskModel>>> GetTasks()
+        public async Task<ActionResult<IEnumerable<TaskDto>>> GetTasks()
         {
-            return Ok(await _context.Tasks.ToListAsync());
+            var tasks = await _context.Tasks.ToListAsync();
+            var taskDtos = tasks.Select(t => new TaskDto
+            {
+                Id = t.id,
+                Name = t.Name,
+                Description = t.Description,
+                Deadline = t.Deadline,
+                IsCompleted = t.IsCompleted,
+                CategoryId = t.CategoryId,
+                AssignedEmployeeId = t.AssignedEmployeeId,
+                RoleId = t.RoleId,
+                EnclosureId = t.EnclosureId,
+                AnimalId = t.AnimalId
+            }).ToList();
+            return Ok(taskDtos);
         }
 
-        // GET: api/Tasks/5
-        [Route("getOne/{id}")]
+        // GET: task/5
+        [Route("{id}")]
         [HttpGet]
-        public async Task<ActionResult<TaskModel>> GetTaskModel(int id)
+        public async Task<ActionResult<TaskDto>> GetTaskModel(int id)
         {
             var taskModel = await _context.Tasks.FindAsync(id);
-
             if (taskModel == null)
             {
                 return NotFound();
             }
 
-            return Ok(taskModel);
+            var taskDto = new TaskDto
+            {
+                Id = taskModel.id,
+                Name = taskModel.Name,
+                Description = taskModel.Description,
+                Deadline = taskModel.Deadline,
+                IsCompleted = taskModel.IsCompleted,
+                CategoryId = taskModel.CategoryId,
+                AssignedEmployeeId = taskModel.AssignedEmployeeId,
+                RoleId = taskModel.RoleId,
+                EnclosureId = taskModel.EnclosureId,
+                AnimalId = taskModel.AnimalId
+            };
+            return Ok(taskDto);
         }
 
         // GET: api/Tasks/5
-        [Route("getForEmployee/{id}")]
+        [Route("forEmployee/{employeeId}")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskModel>>> GetTasksForEmployee(int id)
+        public async Task<ActionResult<IEnumerable<TaskDto>>> GetTasksForEmployee(int employeeId)
         {
-            var employeeTasks = await _context.Tasks.Where(t => t.AssignedEmployeeId == id).ToListAsync();
-
+            var employeeTasks = await _context.Tasks.Where(t => t.AssignedEmployeeId == employeeId).ToListAsync();
             if (employeeTasks == null)
             {
                 return NotFound();
             }
 
-            return Ok(employeeTasks);
+            var taskDtos = employeeTasks.Select(t => new TaskDto
+            {
+                Id = t.id,
+                Name = t.Name,
+                Description = t.Description,
+                Deadline = t.Deadline,
+                IsCompleted = t.IsCompleted,
+                CategoryId = t.CategoryId,
+                AssignedEmployeeId = t.AssignedEmployeeId,
+                RoleId = t.RoleId,
+                EnclosureId = t.EnclosureId,
+                AnimalId = t.AnimalId
+            }).ToList();
+
+            return Ok(taskDtos);
         }
 
-        [Route("getForRole/{id}")]
+        [Route("forRole/{roleId}")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskModel>>> GetTasksForRole(int id)
+        public async Task<ActionResult<IEnumerable<TaskDto>>> GetTasksForRole(int roleId)
         {
-            var roleTasks = await _context.Tasks.Where(t => t.RoleId == id).ToListAsync();
+            var roleTasks = await _context.Tasks.Where(t => t.RoleId == roleId).ToListAsync();
             if (roleTasks == null)
             {
                 return NotFound();
             }
 
-            return Ok(roleTasks);
+            var taskDtos = roleTasks.Select(t => new TaskDto
+                {
+                    Id = t.id,
+                    Name = t.Name,
+                    Description = t.Description,
+                    Deadline = t.Deadline,
+                    IsCompleted = t.IsCompleted,
+                    CategoryId = t.CategoryId,
+                    AssignedEmployeeId = t.AssignedEmployeeId,
+                    RoleId = t.RoleId,
+                    EnclosureId = t.EnclosureId,
+                    AnimalId = t.AnimalId
+                }).ToList();
+
+            return Ok(taskDtos);
         }
 
-        // PUT: api/Tasks/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("update/{id}")]
+        // PUT: task/5
+        [HttpPut("{id}")]
         public async Task<IActionResult> PutTaskModel(int id, TaskUpdateDto taskModel)
         {
 
@@ -119,11 +171,9 @@ namespace ZooManagmentSystem.Controllers.Employees
             return Ok(new { message = "Task edited." });
         }
 
-        // POST: api/Tasks
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Route("new")]
+        // POST: task
         [HttpPost]
-        public async Task<ActionResult<TaskModel>> PostTaskModel(TaskDto taskModel)
+        public async Task<ActionResult<TaskModel>> PostTaskModel(TaskCreateDto taskModel)
         {
 
             TaskModel newTask = new TaskModel {
@@ -144,8 +194,8 @@ namespace ZooManagmentSystem.Controllers.Employees
             return Ok( new { message = "Created task." });
         }
 
-        // DELETE: api/Tasks/5
-        [Route("delete/{id}")]
+        // DELETE: task/5
+        [Route("{id}")]
         [HttpDelete]
         public async Task<IActionResult> DeleteTaskModel(int id)
         {
