@@ -26,83 +26,27 @@ namespace ZooManagmentSystem.Controllers.Employees
         // GET: api/Employees
         //[Authorize(Roles = "Manager")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EmployeeModel>>> GetEmployees()
+        public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetEmployees()
         {
-            return Ok( await _context.Employees.ToListAsync());
-        }
-
-        [HttpGet]
-        [Route("getAllRoles")]
-        public IActionResult GetAllRoles()
-        {
-            var roles = _context.Roles.Select(r => new
+            var employees = await _context.Employees.Select(e => new EmployeeDto
             {
-                r.id,
-                r.Name,
-                r.Description,
-                r.IsManagerial
-            }).ToList();
-            return Ok(roles);
-        }
-
-        [HttpGet]
-        [Route("{id}/role")]
-        public IActionResult GetEmployeeRole(int id)
-        {
-            var roleId = _context.Employees.Where(e => e.id == id).Select(e => e.RoleId).FirstOrDefault();
-            var role = _context.Roles.Where(r => r.id == roleId).Select(r => new
-            {
-                r.id,
-                r.Name,
-                r.Description,
-                r.IsManagerial
-            }).FirstOrDefault();
-            if (role == null)
-            {
-                return NotFound();
-            }
-            return Ok(role);
-        }
-
-        [HttpPost]
-        [Route("roles/new")]
-        public IActionResult AddNewRole([FromBody] RoleDto roleDto)
-        {
-            var isExists = _context.Roles.Any(r => r.Name == roleDto.Name);
-
-            if (!isExists)
-            {
-                var newRole = new RoleModel
-                {
-                    Name = roleDto.Name,
-                    Description = roleDto.Description,
-                    IsManagerial = roleDto.IsManagerial
-                };
-
-                _context.Roles.Add(newRole);
-                _context.SaveChanges();
-                return Ok(new { message = "New role added successfuly!" });
-            }
-
-            return BadRequest();
-
-        }
-
-        [HttpDelete]
-        [Route("roles/delete/{id}")]
-        public IActionResult DeleteRole(int id)
-        {
-            var role = _context.Roles.Find(id);
-            if (role == null) return NotFound();        
-            _context.Roles.Remove(role);
-            _context.SaveChanges();
-            return Ok(new { message = "Role deleted successfuly!" });
+                Id = e.id,
+                FirstName = e.FirstName,
+                LastName = e.LastName,
+                BirthDay = e.BirthDay,
+                Email = e.Email,
+                PhoneNumber = e.PhoneNumber,
+                SupervisorId = e.SupervisorId,
+                RoleId = e.RoleId,
+                IconId = e.IconId
+            }).ToListAsync();
+            return Ok(employees);
         }
 
         // GET: api/Employees/5
         //[Authorize(Roles = "Manager")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<EmployeeModel>> GetEmployeeModel(int id)
+        public async Task<ActionResult<EmployeeDto>> GetEmployeeModel(int id)
         {
             var employeeModel = await _context.Employees.FindAsync(id);
 
@@ -110,8 +54,20 @@ namespace ZooManagmentSystem.Controllers.Employees
             {
                 return NotFound();
             }
+            var employeeDto = new EmployeeDto
+            {
+                Id = employeeModel.id,
+                FirstName = employeeModel.FirstName,
+                LastName = employeeModel.LastName,
+                BirthDay = employeeModel.BirthDay,
+                Email = employeeModel.Email,
+                PhoneNumber = employeeModel.PhoneNumber,
+                SupervisorId = employeeModel.SupervisorId,
+                RoleId = employeeModel.RoleId,
+                IconId = employeeModel.IconId
+            };
 
-            return Ok(employeeModel);
+            return Ok(employeeDto);
         }
 
         // PUT: api/Employees/5
@@ -162,7 +118,7 @@ namespace ZooManagmentSystem.Controllers.Employees
         }
 
         //[Authorize(Roles = "Manager")]
-        [HttpPut("asManager/{id}")]
+        [HttpPut("{id}/asManager")]
         public async Task<IActionResult> PutEmployeeAsManagerModel(int id, UpdateEmployeeManagerDto employeeModel)
         {
             if (id != employeeModel.id)
@@ -210,6 +166,74 @@ namespace ZooManagmentSystem.Controllers.Employees
             }
 
             return Ok(new { message = "Profile edited!" });
+        }
+
+        [HttpGet]
+        [Route("{id}/role")]
+        public IActionResult GetEmployeeRole(int id)
+        {
+            var roleId = _context.Employees.Where(e => e.id == id).Select(e => e.RoleId).FirstOrDefault();
+            var role = _context.Roles.Where(r => r.id == roleId).Select(r => new
+            {
+                r.id,
+                r.Name,
+                r.Description,
+                r.IsManagerial
+            }).FirstOrDefault();
+            if (role == null)
+            {
+                return NotFound();
+            }
+            return Ok(role);
+        }
+
+        [HttpGet]
+        [Route("roles")]
+        public IActionResult GetAllRoles()
+        {
+            var roles = _context.Roles.Select(r => new
+            {
+                r.id,
+                r.Name,
+                r.Description,
+                r.IsManagerial
+            }).ToList();
+            return Ok(roles);
+        }
+
+        [HttpPost]
+        [Route("roles")]
+        public IActionResult AddNewRole([FromBody] RoleDto roleDto)
+        {
+            var isExists = _context.Roles.Any(r => r.Name == roleDto.Name);
+
+            if (!isExists)
+            {
+                var newRole = new RoleModel
+                {
+                    Name = roleDto.Name,
+                    Description = roleDto.Description,
+                    IsManagerial = roleDto.IsManagerial
+                };
+
+                _context.Roles.Add(newRole);
+                _context.SaveChanges();
+                return Ok(new { message = "New role added successfuly!" });
+            }
+
+            return BadRequest();
+
+        }
+
+        [HttpDelete]
+        [Route("roles/{id}")]
+        public IActionResult DeleteRole(int id)
+        {
+            var role = _context.Roles.Find(id);
+            if (role == null) return NotFound();
+            _context.Roles.Remove(role);
+            _context.SaveChanges();
+            return Ok(new { message = "Role deleted successfuly!" });
         }
 
         //First we need to understand how to remove claims and identity
