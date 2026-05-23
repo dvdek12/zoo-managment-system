@@ -26,7 +26,7 @@ namespace ZooManagmentSystem.Controllers
             _context = context;
         }
 
-        [Route("getAll")]
+        [Route("")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ReportDto>>> GetReports()
         {
@@ -44,7 +44,7 @@ namespace ZooManagmentSystem.Controllers
             return reports;
         }
 
-        [Route("getOne/{id}")]
+        [Route("{id}")]
         [HttpGet]
         public async Task<ActionResult<ReportDto>> GetReportModel(int id)
         {
@@ -79,7 +79,7 @@ namespace ZooManagmentSystem.Controllers
 
 
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Route("new/forManager")]
+        [Route("forManager")]
         [HttpPost]
         public async Task<ActionResult> PostReportForManager(ReportCreateDto reportDto)
         {
@@ -109,7 +109,7 @@ namespace ZooManagmentSystem.Controllers
             return Ok(new { message = "Report generated" });
         }
 
-        [Route("new/forEmployee")]
+        [Route("forEmployee")]
         [HttpPost]
         public async Task<ActionResult> PostReportForEmployee(ReportCreateDto reportDto)
         {
@@ -140,7 +140,7 @@ namespace ZooManagmentSystem.Controllers
             return Ok(new { message = "Report generated" });
         }
 
-        [Route("delete/{id}")]
+        [Route("{id}")]
         [HttpDelete]
         public async Task<IActionResult> DeleteReportModel(int id)
         {
