@@ -3,14 +3,13 @@ using ZooManagmentSystem.Models.Animal;
 
 namespace ZooManagmentSystem.DTOs.Animal
 {
-    public class AnimalAttributeDto
+    public class AnimalAttributeCreateDto
     {
-        public int AnimalId { get; set; }
         public int AttributeId { get; set; }
         public string AttributeValue { get; set; }
     }
 
-    public class AttributesForAnimalDto
+    public class AnimalAttributeDto
     {
         public int Id { get; set; }
         public string Name { get; set; }

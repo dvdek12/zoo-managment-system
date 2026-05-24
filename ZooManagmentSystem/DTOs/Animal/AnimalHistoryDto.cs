@@ -5,6 +5,7 @@ namespace ZooManagmentSystem.DTOs.Animal
 {
     public class AnimalHistoryCreateDto
     {
+        public int AnimalId { get; set; }
         public int ConditionId { get; set; }
         public float Temperature { get; set; }
         public float Weight { get; set; }

@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 
 namespace ZooManagmentSystem.Controllers.Animals
 {
-    [Route("Animal/Attribute")]
+    [Route("animals")]
     [ApiController]
     public class AnimalAttributeController : ControllerBase
     {
@@ -24,19 +24,23 @@ namespace ZooManagmentSystem.Controllers.Animals
         }
 
         // GET: Animal/Attributes/
-        [HttpGet("{id}")]
-        public async Task<ActionResult<AttributesForAnimalDto>> GetAnimalAttributes(int id)
+        [HttpGet("{animalId}/attribute/{attributeId}")]
+        public async Task<ActionResult<AnimalAttributeDto>> GetAnimalAttributes(int animalId, int attributeId)
         {
-            var animalAttribute = await _context.AnimalAttributes.FindAsync(id);
+            var animalAttribute = await _context.AnimalAttributes.FindAsync(attributeId);
             if (animalAttribute == null)
             {
                 return NotFound();
             }
+            if(animalAttribute.AnimalId != animalId)
+            {
+                return BadRequest();
+            }   
 
             var attributeInfo = await _context.Attributes.FindAsync(animalAttribute.AttributeId);
             string attributeName = attributeInfo != null ? attributeInfo.AttributeName : "Unknown Attribute";
 
-            var animalAttributeDto = new AttributesForAnimalDto
+            var animalAttributeDto = new AnimalAttributeDto
             {
                 Id = animalAttribute.id,
                 Name = attributeName,
@@ -48,9 +52,9 @@ namespace ZooManagmentSystem.Controllers.Animals
 
         // GET: Animal/Attribute/5
         // Get all attributes for a specific animal
-        [Route("/forAnimal/{id}")]
+        [Route("{id}/attributes")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AttributesForAnimalDto>>> GetAnimalAttributeModel(int id)
+        public async Task<ActionResult<IEnumerable<AnimalAttributeDto>>> GetAnimalAttributeModel(int id)
         {
             var animalAttributeModel = await _context.AnimalAttributes.Where(t => t.AnimalId == id).ToListAsync();
 
@@ -59,14 +63,14 @@ namespace ZooManagmentSystem.Controllers.Animals
                 return NotFound();
             }
 
-            var attributeDetails = new List<AttributesForAnimalDto>();
+            var attributeDetails = new List<AnimalAttributeDto>();
 
             foreach (var attribute in animalAttributeModel)
             {
                 var attributeInfo = await _context.Attributes.FindAsync(attribute.AttributeId);
                 if (attributeInfo != null)
                 {
-                    attributeDetails.Add(new AttributesForAnimalDto
+                    attributeDetails.Add(new AnimalAttributeDto
                     {
                         Id = attribute.id,
                         Name = attributeInfo.AttributeName,
@@ -75,7 +79,7 @@ namespace ZooManagmentSystem.Controllers.Animals
                 }
                 else
                 {
-                    attributeDetails.Add(new AttributesForAnimalDto
+                    attributeDetails.Add(new AnimalAttributeDto
                     {
                         Id = attribute.AttributeId,
                         Name = "Unknown Attribute",
@@ -83,23 +87,26 @@ namespace ZooManagmentSystem.Controllers.Animals
                     });
                 }
             }
-                return Ok(attributeDetails);
+            return Ok(attributeDetails);
         }
 
-        // PUT: Animal/Attribute/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutAnimalAttributeModel(int id, AnimalAttributeUpdateDto animalAttributeModel)
+        // PUT: Animal/5/Attribute/5
+        [HttpPut("{animalId}attribute/{attributeId}")]
+        public async Task<IActionResult> PutAnimalAttributeModel(int animalId, int attributeId, AnimalAttributeUpdateDto animalAttributeModel)
         {
-            if (id != animalAttributeModel.Id)
+            if (attributeId != animalAttributeModel.Id)
             {
                 return BadRequest();
             }
 
-            var existingAnimalAttribute = await _context.AnimalAttributes.FindAsync(id);
+            var existingAnimalAttribute = await _context.AnimalAttributes.FindAsync(attributeId);
             if (existingAnimalAttribute == null)
             {
                 return NotFound();
+            }
+            if(existingAnimalAttribute.AnimalId != animalId)
+            {
+                return BadRequest();
             }
 
             existingAnimalAttribute.AttributeValue = animalAttributeModel.Value;
@@ -110,7 +117,7 @@ namespace ZooManagmentSystem.Controllers.Animals
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!AnimalAttributeModelExists(id))
+                if (!AnimalAttributeModelExists(attributeId))
                 {
                     return NotFound();
                 }
@@ -125,12 +132,13 @@ namespace ZooManagmentSystem.Controllers.Animals
 
         // POST: Animal/Attribute
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Route("{animalId}/attribute")]
         [HttpPost]
-        public async Task<ActionResult<AnimalAttributeModel>> PostAnimalAttributeModel(AnimalAttributeDto animalAttributeModel)
+        public async Task<ActionResult<AnimalAttributeModel>> PostAnimalAttributeModel(int animalId, AnimalAttributeCreateDto animalAttributeModel)
         {
             var newAnimalAttribute = new AnimalAttributeModel
             {
-                AnimalId = animalAttributeModel.AnimalId,
+                AnimalId = animalId,
                 AttributeId = animalAttributeModel.AttributeId,
                 AttributeValue = animalAttributeModel.AttributeValue
             };
@@ -140,17 +148,21 @@ namespace ZooManagmentSystem.Controllers.Animals
             return Ok( new { message = "Animal attribute added successfully!" });    
         }
 
-        // DELETE: Animal/Attribute/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAnimalAttributeModel(int id)
+        // DELETE: Animal/5/Attribute/5
+        [HttpDelete("{animalId}/attribute/{attributeId}")]
+        public async Task<IActionResult> DeleteAnimalAttributeModel(int animalId, int attributeId)
         {
-            var animalAttributeModel = await _context.AnimalAttributes.FindAsync(id);
-            if (animalAttributeModel == null)
+            var animalAttribute = await _context.AnimalAttributes.FindAsync(attributeId);
+            if (animalAttribute == null)
             {
                 return NotFound();
             }
+            if (animalAttribute.AnimalId != animalId)
+            {
+                return BadRequest();
+            }
 
-            _context.AnimalAttributes.Remove(animalAttributeModel);
+            _context.AnimalAttributes.Remove(animalAttribute);
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "Animal attribute deleted successfully!" });
