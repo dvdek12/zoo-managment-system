@@ -3,7 +3,7 @@
     // DTO dla pracownika - tylko jego własne dane
     public class UpdateEmployeeDto
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? PhoneNumber { get; set; }
@@ -13,7 +13,7 @@
     // DTO dla managera - może zmieniać rolę
     public class UpdateEmployeeManagerDto
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public DateTime? BirthDay { get; set; }

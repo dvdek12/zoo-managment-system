@@ -31,6 +31,7 @@ namespace ZooManagmentSystem.Controllers.Clients
             var clients = await _context.Clients.ToListAsync();
             var clientDtos = clients.Select(client => new ClientDto
             {
+                Id = client.id,
                 FirstName = client.FirstName,
                 LastName = client.LastName,
                 Email = client.Email,
@@ -53,6 +54,7 @@ namespace ZooManagmentSystem.Controllers.Clients
 
             return Ok(new ClientDto
             {
+                Id = clientModel.id,
                 FirstName = clientModel.FirstName,
                 LastName = clientModel.LastName,
                 Email = clientModel.Email,
@@ -65,7 +67,7 @@ namespace ZooManagmentSystem.Controllers.Clients
         public async Task<IActionResult> PutClientModel(int id, ClientUpdateDto clientModel)
         {
 
-            if (id != clientModel.id)
+            if (id != clientModel.Id)
             {
                 return BadRequest();
             }

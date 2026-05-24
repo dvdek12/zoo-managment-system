@@ -17,6 +17,7 @@ namespace ZooManagmentSystem.DTOs
     }
     public class ClientDto
     {
+        public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime BirthDay { get; set; }
@@ -25,7 +26,7 @@ namespace ZooManagmentSystem.DTOs
     }
     public class ClientUpdateDto
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public DateTime? BirthDay { get; set; }

@@ -76,7 +76,7 @@ namespace ZooManagmentSystem.Controllers.Employees
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmployeeModel(int id, UpdateEmployeeDto employeeModel)
         {
-            if (id != employeeModel.id)
+            if (id != employeeModel.Id)
             {
                 return BadRequest();
             }
@@ -121,7 +121,7 @@ namespace ZooManagmentSystem.Controllers.Employees
         [HttpPut("{id}/asManager")]
         public async Task<IActionResult> PutEmployeeAsManagerModel(int id, UpdateEmployeeManagerDto employeeModel)
         {
-            if (id != employeeModel.id)
+            if (id != employeeModel.Id)
             {
                 return BadRequest();
             }

@@ -37,7 +37,7 @@ namespace ZooManagmentSystem.Controllers
                 Title = r.Title,
                 Content = r.Content,
                 Type = r.Type,
-                CreatedAt = DateTime.Now,
+                CreatedAt = r.CreatedAt,
                 AuthorId = r.AuthorId,
             })
                 .ToListAsync();

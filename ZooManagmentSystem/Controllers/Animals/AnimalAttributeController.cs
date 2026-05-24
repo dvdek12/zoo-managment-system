@@ -91,7 +91,7 @@ namespace ZooManagmentSystem.Controllers.Animals
         }
 
         // PUT: Animal/5/Attribute/5
-        [HttpPut("{animalId}attribute/{attributeId}")]
+        [HttpPut("{animalId}/attribute/{attributeId}")]
         public async Task<IActionResult> PutAnimalAttributeModel(int animalId, int attributeId, AnimalAttributeUpdateDto animalAttributeModel)
         {
             if (attributeId != animalAttributeModel.Id)

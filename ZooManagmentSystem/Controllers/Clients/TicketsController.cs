@@ -132,7 +132,7 @@ namespace ZooManagmentSystem.Controllers.Clients
             if(entryTypes.Count != ticketModel.EntryTypeIds.Count)
                 return BadRequest(new { message = "One or more entry types are invalid." });
 
-            decimal totalPrice = entryTypes.Sum(et => et.Price);
+            decimal totalPrice = entryTypes.Sum(et => et.Price * ticketModel.EntryTypeIds[et.id]);
 
             var ticket = new TicketModel
             {
