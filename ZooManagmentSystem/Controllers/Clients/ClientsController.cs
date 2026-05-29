@@ -26,12 +26,22 @@ namespace ZooManagmentSystem.Controllers.Clients
         // for employees only
         [Route("getAll")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ClientModel>>> GetClients()
+        public async Task<ActionResult<IEnumerable<ClientDto>>> GetClients()
         {
-            return await _context.Clients.ToListAsync();
+            var clients = await _context.Clients.ToListAsync();
+            var clientDtos = clients.Select(client => new ClientDto
+            {
+                Id = client.id,
+                FirstName = client.FirstName,
+                LastName = client.LastName,
+                Email = client.Email,
+                PhoneNumber = client.PhoneNumber
+            }).ToList();
+
+            return Ok(clientDtos);
         }
 
-        [Route("getInfo/{id}")]
+        [Route("{id}")]
         [HttpGet]
         public async Task<ActionResult<ClientDto>> GetClientModel(int id)
         {
@@ -44,6 +54,7 @@ namespace ZooManagmentSystem.Controllers.Clients
 
             return Ok(new ClientDto
             {
+                Id = clientModel.id,
                 FirstName = clientModel.FirstName,
                 LastName = clientModel.LastName,
                 Email = clientModel.Email,
@@ -51,13 +62,12 @@ namespace ZooManagmentSystem.Controllers.Clients
             });
         }
 
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Route("update/{id}")]
+        [Route("{id}")]
         [HttpPut]
         public async Task<IActionResult> PutClientModel(int id, ClientUpdateDto clientModel)
         {
 
-            if (id != clientModel.id)
+            if (id != clientModel.Id)
             {
                 return BadRequest();
             }

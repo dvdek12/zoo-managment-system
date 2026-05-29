@@ -23,8 +23,8 @@ namespace ZooManagmentSystem.Controllers
             _context = context;
         }
 
-        // GET: api/Enclosures
-        [Route("getAll")]
+        // GET: enclosure
+        [Route("")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EnclosureModel>>> GetEnclosures()
         {
@@ -35,8 +35,8 @@ namespace ZooManagmentSystem.Controllers
             return Ok(enclosures);
         }
 
-        // GET: api/Enclosures/5
-        [Route("getOne/{id}")]
+        // GET: enclosure/5
+        [Route("{id}")]
         [HttpGet]
         public async Task<ActionResult<EnclosureModel>> GetEnclosureModel(int id)
         {
@@ -50,9 +50,8 @@ namespace ZooManagmentSystem.Controllers
             return Ok(enclosureModel);
         }
 
-        // PUT: api/Enclosures/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Route("update/{id}")]
+        // PUT: enclosure/5
+        [Route("{id}")]
         [HttpPut]
         public async Task<IActionResult> PutEnclosureModel(int id, EnclosureUpdateDto enclosureModel)
         {
@@ -103,9 +102,8 @@ namespace ZooManagmentSystem.Controllers
             return Ok(new { message = "Updated enclosure." });
         }
 
-        // POST: api/Enclosures
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Route("new")]
+        // POST: enclosure
+        [Route("")]
         [HttpPost]
         public async Task<ActionResult<EnclosureModel>> PostEnclosureModel(EnclosureDto enclosureModel)
         {
@@ -123,8 +121,8 @@ namespace ZooManagmentSystem.Controllers
             return Ok(new { message = "Created new enclosure." });
         }
 
-        // DELETE: api/Enclosures/5
-        [Route("delete/{id}")]
+        // DELETE: enclosure/5
+        [Route("{id}")]
         [HttpDelete]
         public async Task<IActionResult> DeleteEnclosureModel(int id)
         {
@@ -140,14 +138,14 @@ namespace ZooManagmentSystem.Controllers
             return Ok(new { message = "Deleted enclosure." });
         }
 
-        [Route("type/getAll")]
+        [Route("type")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EnclosureTypeModel>>> GetEnclosureTypes()
         {
             return Ok(await _context.EnclosureTypes.ToListAsync());
         }
 
-        [Route("type/new")]
+        [Route("type")]
         [HttpPost]
         public async Task<ActionResult<EnclosureTypeModel>> PostEnclosureTypeModel(EnclosureTypeModel enclosureTypeModel)
         {
@@ -163,7 +161,7 @@ namespace ZooManagmentSystem.Controllers
             }
         }
 
-        [Route("type/update/{id}")]
+        [Route("type/{id}")]
         [HttpPut]
         public async Task<IActionResult> PutEnclosureTypeModel(int id, EnclosureTypeModel enclosureModel)
         {
@@ -228,7 +226,7 @@ namespace ZooManagmentSystem.Controllers
         }
 
 
-        [Route("type/delete/{id}")]
+        [Route("type/{id}")]
         [HttpDelete]
         public async Task<IActionResult> DeleteEnclosureTypeModel(int id)
         {

@@ -22,7 +22,7 @@ namespace ZooManagmentSystem.Controllers.Animals
             _context = context;
         }
 
-        [Route("getAll")]
+        [Route("")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FoodTypeModel>>> GetFoodTypes()
         {
@@ -30,7 +30,7 @@ namespace ZooManagmentSystem.Controllers.Animals
         }
 
 
-        [Route("getOne/{id}")]
+        [Route("{id}")]
         [HttpGet]
         public async Task<ActionResult<FoodTypeModel>> GetFoodTypeModel(int id)
         {
@@ -79,7 +79,7 @@ namespace ZooManagmentSystem.Controllers.Animals
         */
 
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Route("new")]
+        [Route("")]
         [HttpPost]
         public async Task<ActionResult<FoodTypeModel>> PostFoodTypeModel(FoodTypeModel foodTypeModel)
         {
@@ -89,7 +89,7 @@ namespace ZooManagmentSystem.Controllers.Animals
             return Ok(new { message = "Food type created successfully!" });
         }
 
-        [Route("delete/{id}")]
+        [Route("{id}")]
         [HttpDelete]
         public async Task<IActionResult> DeleteFoodTypeModel(int id)
         {

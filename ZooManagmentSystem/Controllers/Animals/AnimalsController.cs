@@ -7,6 +7,7 @@ using ZooManagmentSystem.Models.Animal;
 using ZooManagmentSystem.ViewModels;
 using ZooManagmentSystem.DTOs.Animal;
 using ZooManagmentSystem.Models;
+using ZooManagmentSystem.Models.Enums;
 
 namespace ZooManagmentSystem.Controllers.Animals
 {
@@ -22,17 +23,84 @@ namespace ZooManagmentSystem.Controllers.Animals
             _context = context;
         }
 
-        [Route("getAll")]
+        [Route("")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var animals = await _context.Animals.ToListAsync();
-            return Ok(animals);
+            var animalDtos = animals.Select(a => new AnimalDto
+            {
+                Id = a.id,
+                Name = a.Name,
+                RaceName = a.RaceName,
+                Description = a.Description,
+                Origin = a.Origin,
+                DateOfArrival = a.DateOfArrival,
+                EnclosureId = a.EnclosureId,
+                FoodId = a.FoodId,
+                IconId = a.IconId
+            }).ToList();
+            return Ok(animalDtos);
         }
 
-        [Route("create")]
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult GetOne(int id)
+        {
+            var animal = _context.Animals.Include(a => a.Attributes).Include(a => a.AnimalHistories).Include(a => a.Food).FirstOrDefault(a => a.id == id);
+            if (animal == null) return NotFound();
+
+            var animalDto = new AnimalDetailsDto
+            {
+                Id = animal.id,
+                Name = animal.Name,
+                RaceName = animal.RaceName,
+                Description = animal.Description,
+                Origin = animal.Origin,
+                DateOfArrival = animal.DateOfArrival,
+                EnclosureId = animal.EnclosureId,
+                FoodId = animal.FoodId,
+                IconId = animal.IconId
+            };
+            // Setting attributes
+            foreach (var attribute in animal.Attributes)
+            {
+                string attributeName = _context.Attributes.Find(attribute.AttributeId)?.AttributeName ?? "Unknown";
+                animalDto.Attributes.Add(attributeName, attribute.AttributeValue);
+            }
+            // Setting histories
+            foreach (var history in animal.AnimalHistories)
+            {
+                animalDto.History.Add(new AnimalHistoryDto
+                {
+                    Id = history.id,
+                    AnimalId = history.AnimalId,
+                    Condition = _context.AnimalConditions.Find(history.ConditionId)?.Condition ?? "Unknown",
+                    Temperature = history.Temperature,
+                    Weight = history.Weight,
+                    IsVacinated = history.IsVacinated,
+                    DateOfLastCheckup = history.DateOfLastCheckup
+                });
+            }
+
+            // Setting enclosure
+            var enclosure = _context.Enclosures.Find(animal.EnclosureId);
+            animalDto.Enclosure = enclosure != null ? new DTOs.EnclosureDto
+            {
+                Name = enclosure.Name,
+                Description = enclosure.Description
+            } : null;
+
+            //setting food
+            var food = _context.FoodTypes.Find(animal.FoodId);
+            animalDto.Food = food != null ? food.FoodName : null;
+
+            return Ok(animalDto);
+        }
+
+        [Route("")]
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] AnimalDto animal)
+        public async Task<IActionResult> Create([FromBody] AnimalCreateDto animal)
         {
             try
             {
@@ -44,21 +112,11 @@ namespace ZooManagmentSystem.Controllers.Animals
                     Origin = animal.Origin,
                     DateOfArrival = animal.DateOfArrival,
                     EnclosureId = animal.EnclosureId,
+                    FoodId = animal.FoodId,
                     IconId = animal.IconId
                 };
 
-                var animalHistory = new AnimalHistoryModel
-                {
-                    Animal = newAnimal,
-                    ConditionId = 0,
-                    Temperature = 0,
-                    Weight = 0,
-                    IsVacinated = false,
-                    DateOfLastCheckup = DateTime.Now
-                };
-
                 _context.Animals.Add(newAnimal);
-                _context.AnimalHistories.Add(animalHistory);
                 await _context.SaveChangesAsync();
                 return Ok(new { message = "Animal added successfuly!" });
             }
@@ -68,29 +126,29 @@ namespace ZooManagmentSystem.Controllers.Animals
             }
         }
 
-
         [HttpGet]
-        [Route("getOne/{id}")]
-        public IActionResult GetOne(int id)
-        {
-            var animal = _context.Animals.Include(a => a.Attributes).FirstOrDefault(a => a.id == id);
-            if (animal == null) return NotFound();
-            return Ok(animal);
-        }
-
-        [HttpGet]
-        [Route("getHistory/{id}")]
+        [Route("{id}/getHistory")]
         public IActionResult GetAnimalHistory(int id)
         {
             var animalHistory = _context.AnimalHistories
                 .Where(ah => ah.Animal != null && ah.Animal.id == id)
                 .ToList();
             if (animalHistory == null || animalHistory.Count == 0) return NotFound();
-            return Ok(animalHistory);
+            var animalHistoryDtos = animalHistory.Select(ah => new AnimalHistoryDto
+            {
+                Id = ah.id,
+                AnimalId = ah.AnimalId,
+                Condition = _context.AnimalConditions.Find(ah.ConditionId)?.Condition ?? "Unknown",
+                Temperature = ah.Temperature,
+                Weight = ah.Weight,
+                IsVacinated = ah.IsVacinated,
+                DateOfLastCheckup = ah.DateOfLastCheckup
+            }).ToList();
+            return Ok(animalHistoryDtos);
         }
 
         [HttpPost]
-        [Route("addHistory/{id}")]
+        [Route("{id}/addHistory")]
         public IActionResult AddAnimalHistory(int id, AnimalHistoryCreateDto animalHistoryDto)
         {
             var animal = _context.Animals.Find(id);
@@ -110,18 +168,28 @@ namespace ZooManagmentSystem.Controllers.Animals
             return Ok(new { message = "Animal history added successfuly!" });
         }
 
-        [HttpPost]
-        [Route("edit/{id}")]
-        public IActionResult Edit(int id, AnimalModel animal)
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult Edit(int id, AnimalUpdateDto animal)
         {
-            if(id != animal.id) return BadRequest();
+            var existingAnimal = _context.Animals.Find(id);
+            if (existingAnimal == null) return NotFound();
 
-            _context.Animals.Update(animal);
+            existingAnimal.Name = animal.Name ?? existingAnimal.Name;
+            existingAnimal.RaceName = animal.RaceName ?? existingAnimal.RaceName;
+            existingAnimal.Description = animal.Description ?? existingAnimal.Description;
+            existingAnimal.Origin = animal.Origin ?? existingAnimal.Origin;
+            existingAnimal.DateOfArrival = animal.DateOfArrival ?? existingAnimal.DateOfArrival;
+            existingAnimal.EnclosureId = animal.EnclosureId ?? existingAnimal.EnclosureId;
+            existingAnimal.FoodId = animal.FoodId ?? existingAnimal.FoodId;
+            existingAnimal.IconId = animal.IconId ?? existingAnimal.IconId;
+
+            _context.Animals.Update(existingAnimal);
             _context.SaveChanges();
-            return Ok("Animal edited!");
+            return Ok("Animal updated!");
         }
 
-        [Route("delete")]
+        [Route("{id}")]
         [HttpDelete]
         public IActionResult Delete(int id)
         {

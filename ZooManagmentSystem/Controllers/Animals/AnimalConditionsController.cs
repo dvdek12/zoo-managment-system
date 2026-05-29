@@ -22,7 +22,7 @@ namespace ZooManagmentSystem.Controllers.Animals
         }
 
         // GET: api/AnimalConditions
-        [Route("getAll")]
+        [Route("")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AnimalConditionModel>>> GetAnimalConditions()
         {
@@ -30,7 +30,7 @@ namespace ZooManagmentSystem.Controllers.Animals
         }
 
         // GET: api/AnimalConditions/5
-        [Route("getOne/{id}")]
+        [Route("{id}")]
         [HttpGet]
         public async Task<ActionResult<AnimalConditionModel>> GetAnimalConditionModel(int id)
         {
@@ -81,7 +81,7 @@ namespace ZooManagmentSystem.Controllers.Animals
 
         // POST: api/AnimalConditions
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Route("new")]
+        [Route("")]
         [HttpPost]
         public async Task<ActionResult<AnimalConditionModel>> PostAnimalConditionModel(AnimalConditionModel animalConditionModel)
         {
@@ -92,7 +92,7 @@ namespace ZooManagmentSystem.Controllers.Animals
         }
 
         // DELETE: api/AnimalConditions/5
-        [Route("delete/{id}")]
+        [Route("{id}")]
         [HttpDelete]
         public async Task<IActionResult> DeleteAnimalConditionModel(int id)
         {

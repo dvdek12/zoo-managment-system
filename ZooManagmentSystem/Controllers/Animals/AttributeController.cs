@@ -24,14 +24,39 @@ namespace ZooManagmentSystem.Controllers.Animals
 
         // GET: attributes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AttributeModel>>> GetAttributes()
+        public async Task<ActionResult<IEnumerable<AttributeDto>>> GetAttributes()
         {
-            return Ok(await _context.Attributes.ToListAsync());
+            var attributes = await _context.Attributes.ToListAsync();
+            var attributeDtos = attributes.Select(a => new AttributeDto
+            {
+                Id = a.id,
+                AttributeName = a.AttributeName,
+                AnimalType = _context.AnimalType.Find(a.AnimalTypeId)?.AnimalTypeName ?? "Unknown",
+                AttributeType = a.AttributeType
+            }).ToList();
+            return Ok(attributeDtos);
         }
+
+        // GET: attributes/forType/5
+        [Route("forType/{typeId}")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<AttributeDto>>> GetAttributesForType(int typeId)
+        {
+            var attributes = await _context.Attributes.Where(a => a.AnimalTypeId == typeId).ToListAsync();
+            var attributeDtos = attributes.Select(a => new AttributeDto
+            {
+                Id = a.id,
+                AttributeName = a.AttributeName,
+                AnimalType = _context.AnimalType.Find(a.AnimalTypeId)?.AnimalTypeName ?? "Unknown",
+                AttributeType = a.AttributeType
+            }).ToList();
+            return Ok(attributeDtos);
+        }
+
 
         // GET: attributes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<AttributeModel>> GetAttributeModel(int id)
+        public async Task<ActionResult<AttributeDto>> GetAttributeModel(int id)
         {
             var attributeModel = await _context.Attributes.FindAsync(id);
 
@@ -39,18 +64,37 @@ namespace ZooManagmentSystem.Controllers.Animals
             {
                 return NotFound();
             }
-            return Ok(attributeModel);
+            
+            var attributeDto = new AttributeDto
+            {
+                Id = attributeModel.id,
+                AttributeName = attributeModel.AttributeName,
+                AnimalType = _context.AnimalType.Find(attributeModel.AnimalTypeId)?.AnimalTypeName ?? "Unknown",
+                AttributeType = attributeModel.AttributeType
+            };
+
+            return Ok(attributeDto);
         }
 
         // PUT: attributes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAttributeModel(int id, AttributeModel attributeModel)
+        public async Task<IActionResult> PutAttributeModel(int id, AttributeUpdateDto attributeDto)
         {
-            if (id != attributeModel.id)
+            if (id != attributeDto.Id)
             {
                 return BadRequest();
             }
+
+            var attributeModel = await _context.Attributes.FindAsync(id);
+            if (attributeModel == null)
+            {
+                return NotFound();
+            }
+
+            attributeModel.AttributeName = attributeDto.AttributeName;
+            attributeModel.AnimalTypeId = attributeDto.AnimalTypeId;
+            attributeModel.AttributeType = attributeDto.AttributeType;
 
             _context.Entry(attributeModel).State = EntityState.Modified;
 
@@ -76,7 +120,7 @@ namespace ZooManagmentSystem.Controllers.Animals
         // POST: attributes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<AttributeModel>> PostAttributeModel(AttributeDto attributeModel)
+        public async Task<ActionResult<AttributeModel>> PostAttributeModel(AttributeCreateDto attributeModel)
         {
             AttributeModel newAttributeModel = new AttributeModel
             {
