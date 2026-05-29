@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ZooManagmentSystem.Data;
 using ZooManagmentSystem.Models.Employee;
 using ZooManagmentSystem.DTOs.Employee;
+using ZooManagmentSystem.Services;
 
 namespace ZooManagmentSystem.Controllers.Employees
 {
@@ -16,10 +17,12 @@ namespace ZooManagmentSystem.Controllers.Employees
     public class TasksController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly NotificationService _notification;
 
-        public TasksController(AppDbContext context)
+        public TasksController(AppDbContext context, NotificationService notification)
         {
             _context = context;
+            _notification = notification;
         }
 
         // GET: task
@@ -148,7 +151,10 @@ namespace ZooManagmentSystem.Controllers.Employees
                 existingTask.Deadline = (DateTime)taskModel.Deadline;
             if(taskModel.IsCompleted != null)
                 existingTask.IsCompleted = (bool)taskModel.IsCompleted;
-            
+
+            if (taskModel.AssignedEmployeeId != null)
+                await _notification.SendToEmployeeAsync(taskModel.AssignedEmployeeId ?? 0,
+                    "New Task!", "You have new task to do: " + existingTask.Name);
 
             _context.Entry(existingTask).State = EntityState.Modified;
 
