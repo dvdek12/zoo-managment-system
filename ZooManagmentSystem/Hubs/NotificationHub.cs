@@ -15,24 +15,16 @@ namespace ZooManagmentSystem.Hubs
         {
             var userEmail = Context.UserIdentifier;
 
-            int userId = 0;
             if (!string.IsNullOrEmpty(userEmail))
             {
-                var employeeUser = await _db.Employees.SingleOrDefaultAsync(u => u.Email == userEmail);
-                if (employeeUser != null)
+                var roles = Context.User.Claims.Select(c => c.Value);
+                if (roles.Contains("Employee"))
                 {
-                    userId = employeeUser.id;
-                    await Groups.AddToGroupAsync(Context.ConnectionId, "E" + userId.ToString());
-                }
-                var clientUser = await _db.Clients.SingleOrDefaultAsync(u => u.Email == userEmail);
-                if (clientUser != null)
-                {
-                    userId = clientUser.id;
-                    await Groups.AddToGroupAsync(Context.ConnectionId, "C" + userId.ToString());
+                    string userId = Context.User.Claims.FirstOrDefault(c => c.Type == "EmployeeId")?.Value ?? "0";
+                    await Groups.AddToGroupAsync(Context.ConnectionId, "E" + userId);
+                    Console.WriteLine($"Połączono, userId: {userId}");
                 }
             }
-            Console.WriteLine($"Połączono, userId: {userId}");
-
             await base.OnConnectedAsync();
         }
 
@@ -40,20 +32,14 @@ namespace ZooManagmentSystem.Hubs
         {
             var userEmail = Context.UserIdentifier;
 
-            int userId = 0;
             if (!string.IsNullOrEmpty(userEmail))
             {
-                var employeeUser = await _db.Employees.SingleOrDefaultAsync(u => u.Email == userEmail);
-                if (employeeUser != null)
+                var roles = Context.User.Claims.Select(c => c.Value);
+                if (roles.Contains("Employee"))
                 {
-                    userId = employeeUser.id;
-                    await Groups.RemoveFromGroupAsync(Context.ConnectionId, "E" + userId.ToString());
-                }
-                var clientUser = await _db.Clients.SingleOrDefaultAsync(u => u.Email == userEmail);
-                if (clientUser != null)
-                {
-                    userId = clientUser.id;
-                    await Groups.RemoveFromGroupAsync(Context.ConnectionId, "C" + userId.ToString());
+                    string userId = Context.User.Claims.FirstOrDefault(c => c.Type == "EmployeeId")?.Value ?? "0";
+                    await Groups.RemoveFromGroupAsync(Context.ConnectionId, "E" + userId);
+                    Console.WriteLine($"rozłączono, userId: {userId}");
                 }
             }
 

@@ -68,30 +68,16 @@ builder.Services.AddAuthentication(options =>
         };
         options.Events = new JwtBearerEvents
         {
-            OnChallenge = context =>
-            {
-                context.HandleResponse();
-                context.Response.StatusCode = 401;
-                return Task.CompletedTask;
-            },
             OnMessageReceived = context =>
             {
                 var accessToken = context.Request.Query["access_token"];
                 var path = context.HttpContext.Request.Path;
-                Console.WriteLine($"=== OnMessageReceived ===");
-                Console.WriteLine($"Path: {path}");
-                Console.WriteLine($"Token z query: '{accessToken}'");
 
                 if (!string.IsNullOrEmpty(accessToken) &&
                     path.StartsWithSegments("/hubs/notifications"))
                 {
                     context.Token = accessToken;
                     Console.WriteLine("Token ustawiony!");
-
-                }
-                else
-                {
-                    Console.WriteLine($"Token NIE ustawiony. Czy token pusty: {string.IsNullOrEmpty(accessToken)}, Czy œcie¿ka pasuje: {path.StartsWithSegments("/hubs/notifications")}");
                 }
                 return Task.CompletedTask;
             }
