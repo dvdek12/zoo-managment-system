@@ -47,6 +47,8 @@ namespace ZooManagmentSystem.Data
 
         // Icon
         public DbSet<IconModel> Icons { get; set; }
+        // Notifications
+        public DbSet<NotificationModel> Notifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -12,6 +12,7 @@ using System.Text.Json.Serialization;
 using ZooManagmentSystem.Data;
 using ZooManagmentSystem.Hubs;
 using ZooManagmentSystem.Models.Employee;
+using ZooManagmentSystem.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,25 +26,6 @@ builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'ZooManagmentSystemContext' not found.")));
-
-
-// KONFIGURACJA JWT BEARER
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(key),
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            RoleClaimType = ClaimTypes.Role
-        };
-    });
 
 // External animals api 
 builder.Services.AddHttpClient("ExternalAnimalsClient", client =>
@@ -62,14 +44,53 @@ builder.Services.AddCors(options => {
     });
 });
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+builder.Services.AddIdentityCore<ApplicationUser>()
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
+    .AddDefaultTokenProviders()
+    .AddSignInManager();
+
+// KONFIGURACJA JWT BEARER
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            RoleClaimType = ClaimTypes.Role
+        };
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+
+                if (!string.IsNullOrEmpty(accessToken) &&
+                    path.StartsWithSegments("/hubs/notifications"))
+                {
+                    context.Token = accessToken;
+                    Console.WriteLine("Token ustawiony!");
+                }
+                return Task.CompletedTask;
+            }
+        };
+    });
+
 
 builder.Services.ConfigureApplicationCookie(options => {
     options.LoginPath = "/Account/Login";
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
+
+builder.Services.AddHostedService<DatabaseMonitorService>();
 
 // Configuration for JSON serialization to handle reference loops 
 //Used because of the cycle in the relationship between TicketModel and TicketEntryTypeModel
@@ -80,6 +101,11 @@ builder.Services.AddControllers().AddJsonOptions(options => {
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSignalR();
+builder.Services.AddScoped<NotificationService>();
+
+
 
 var app = builder.Build();
 
@@ -153,7 +179,6 @@ using (var scope = app.Services.CreateScope())
     */
 }
 
-app.MapHub<GorillaHealthNot>("/gorillaHealthNot");
 
 app.UseSwaggerUI(options => {
     options.DocExpansion(DocExpansion.None); // wszystko zwiniête
@@ -164,6 +189,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
 app.UseCors("AllowVue");
 
 app.UseAuthentication();
@@ -171,6 +197,10 @@ app.UseAuthorization();
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.MapHub<GorillaHealthNot>("/gorillaHealthNot");
+
+app.MapHub<NotificationHub>("/hubs/notifications");
 
 app.MapControllerRoute(
     name: "default",

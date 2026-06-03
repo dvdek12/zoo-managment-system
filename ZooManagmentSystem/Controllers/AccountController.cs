@@ -153,7 +153,7 @@ namespace ZooManagmentSystem.Controllers
                 }
 
                 var roles = await _userManager.GetRolesAsync(user);
-                var token = GenerateJwtToken(user, roles);
+                var token = await GenerateJwtToken(user, roles);
                 return Ok(new
                 {
                     token = token,
@@ -180,21 +180,33 @@ namespace ZooManagmentSystem.Controllers
         public IActionResult AccessDenied() => View();
 
 
-        private string GenerateJwtToken(ApplicationUser user, IList<string> roles)
+        private async Task<string> GenerateJwtToken(ApplicationUser user, IList<string> roles)
         {
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Name, user.UserName)
+                new Claim(ClaimTypes.Name, user.UserName),
             };
+
+            if(roles.Contains("Manager") || roles.Contains("Employee"))
+            {
+                var id = await _context.Employees.Where(e => e.ApplicationUserId == user.Id).Select(e => e.id).FirstOrDefaultAsync();
+                claims.Add(new Claim("EmployeeId", id.ToString()));
+            }
+            else
+            {
+                var id = await _context.Clients.Where(c => c.ApplicationUserId == user.Id).Select(c => c.id).FirstOrDefaultAsync();
+                claims.Add(new Claim("ClientId", id.ToString()));
+            }
 
             // Dynamicznie dodajemy wszystkie role użytkownika do Claimów
             foreach (var role in roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
+
 
             // Pobieramy klucz z konfiguracji (appsettings.json)
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecretKey"]));

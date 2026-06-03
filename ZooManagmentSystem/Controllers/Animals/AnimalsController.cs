@@ -163,6 +163,9 @@ namespace ZooManagmentSystem.Controllers.Animals
                 IsVacinated = animalHistoryDto.IsVacinated,
                 DateOfLastCheckup = animalHistoryDto.DateOfLastCheckup
             };
+
+           
+
             _context.AnimalHistories.Add(animalHistory);
             _context.SaveChanges();
             return Ok(new { message = "Animal history added successfuly!" });
