@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ZooManagmentSystem.Data;
 using ZooManagmentSystem.Models;
@@ -8,6 +9,7 @@ namespace ZooManagmentSystem.Controllers
 {
     [Route("notifications")]
     [ApiController]
+    [Authorize(Roles = "Employee")]
     public class NotificationController : Controller
     {
         private readonly AppDbContext _context;
@@ -17,6 +19,7 @@ namespace ZooManagmentSystem.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "Manager")]
         [Route("")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<NotificationModel>>> GetAllNotifications()

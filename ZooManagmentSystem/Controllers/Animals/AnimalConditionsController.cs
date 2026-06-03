@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using ZooManagmentSystem.Data;
 using ZooManagmentSystem.Models.Dictionaries;
 
@@ -12,6 +13,8 @@ namespace ZooManagmentSystem.Controllers.Animals
 {
     [Route("animalCondition")]
     [ApiController]
+    [Authorize(Roles = "Employee")]
+
     public class AnimalConditionsController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -80,7 +83,7 @@ namespace ZooManagmentSystem.Controllers.Animals
         */
 
         // POST: api/AnimalConditions
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "Manager")]
         [Route("")]
         [HttpPost]
         public async Task<ActionResult<AnimalConditionModel>> PostAnimalConditionModel(AnimalConditionModel animalConditionModel)
@@ -92,6 +95,7 @@ namespace ZooManagmentSystem.Controllers.Animals
         }
 
         // DELETE: api/AnimalConditions/5
+        [Authorize(Roles = "Manager")]
         [Route("{id}")]
         [HttpDelete]
         public async Task<IActionResult> DeleteAnimalConditionModel(int id)

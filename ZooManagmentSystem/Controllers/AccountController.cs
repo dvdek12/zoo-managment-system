@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -69,6 +70,7 @@ namespace ZooManagmentSystem.Controllers
         }
 
         // POST: /Account/Employee/Register
+        [Authorize(Roles = "Manager")]
         [Route("RegisterEmployee")]
         [HttpPost]
         public async Task<IActionResult> RegisterEmployee([FromBody] EmployeeRegisterDto model)

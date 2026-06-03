@@ -1,18 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using ZooManagmentSystem.Data;
-using ZooManagmentSystem.Models.Animal;
 using ZooManagmentSystem.DTOs.Animal;
+using ZooManagmentSystem.Models.Animal;
 
 namespace ZooManagmentSystem.Controllers.Animals
 {
+
     [Route("attributes")]
     [ApiController]
+    [Authorize(Roles = "Employee")]
     public class AttributeController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -77,7 +80,7 @@ namespace ZooManagmentSystem.Controllers.Animals
         }
 
         // PUT: attributes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "Manager")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAttributeModel(int id, AttributeUpdateDto attributeDto)
         {
@@ -118,7 +121,7 @@ namespace ZooManagmentSystem.Controllers.Animals
         }
 
         // POST: attributes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<ActionResult<AttributeModel>> PostAttributeModel(AttributeCreateDto attributeModel)
         {
@@ -136,6 +139,7 @@ namespace ZooManagmentSystem.Controllers.Animals
         }
 
         // DELETE: attributes/5
+        [Authorize(Roles = "Manager")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAttributeModel(int id)
         {

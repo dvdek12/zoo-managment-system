@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Update;
@@ -25,6 +26,7 @@ namespace ZooManagmentSystem.Controllers.Clients
         }
 
         // GET: tickets
+        [Authorize(Roles = "Manager")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TicketDto>>> GetTickets()
         {
@@ -52,8 +54,9 @@ namespace ZooManagmentSystem.Controllers.Clients
 
             return Ok(ticketList);
         }
-            
+
         // GET: /tickets/5
+        [Authorize(Roles = "Client, Manager, Employee")]
         [HttpGet("{id}")]
         public async Task<ActionResult<TicketDto>> GetTicket(int id)
         {
@@ -83,6 +86,7 @@ namespace ZooManagmentSystem.Controllers.Clients
         }
 
         // GET: /tickets/forClient/5
+        [Authorize(Roles = "Client, Manager, Employee")]
         [HttpGet("forClient/{clientId}")]
         public async Task<ActionResult<IEnumerable<TicketDto>>> GetTicketsForClient(int clientId)
         {
@@ -121,6 +125,7 @@ namespace ZooManagmentSystem.Controllers.Clients
         }
 
         // POST: tickets
+        [Authorize(Roles = "Client, Manager, Employee")]
         [HttpPost]
         public async Task<ActionResult<TicketModel>> CreateTicket(TicketNewDto ticketModel)
         {
@@ -152,6 +157,7 @@ namespace ZooManagmentSystem.Controllers.Clients
         }
 
         // DELETE: tickets/5
+        [Authorize(Roles = "Manager")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTicketModel(int id)
         {
@@ -167,6 +173,7 @@ namespace ZooManagmentSystem.Controllers.Clients
             return Ok(new { message = "Ticket deleted successfully!" });
         }
 
+        [Authorize(Roles = "Client, Manager, Employee")]
         [Route("entryType")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EntryTypeModel>>> GetEntryTypes()
@@ -174,6 +181,7 @@ namespace ZooManagmentSystem.Controllers.Clients
             return Ok(await _context.EntryTypes.ToListAsync());
         }
 
+        [Authorize(Roles = "Manager")]
         [Route("entryType")]
         [HttpPost]
         public async Task<ActionResult<EntryTypeModel>> CreateEntryType(EntryTypeModel entryTypeModel)
@@ -184,6 +192,7 @@ namespace ZooManagmentSystem.Controllers.Clients
             return Ok(new { message = "Created entry type successfully!" });
         }
 
+        [Authorize(Roles = "Manager")]
         [Route("entryType/{id}")]
         [HttpPut]
         public async Task<ActionResult<EntryTypeModel>> UpdateEntryType(int id,EntryTypeModel entryTypeModel)
@@ -205,6 +214,7 @@ namespace ZooManagmentSystem.Controllers.Clients
             return Ok(new { message = "Updated entry type successfully!" });
         }
 
+        [Authorize(Roles = "Manager")]
         [Route("entryType/{id}")]
         [HttpDelete()]
         public async Task<IActionResult> DeleteEntryType(int id)

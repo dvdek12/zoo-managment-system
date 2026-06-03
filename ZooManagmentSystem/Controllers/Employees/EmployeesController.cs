@@ -14,6 +14,7 @@ namespace ZooManagmentSystem.Controllers.Employees
 {
     [Route("employee")]
     [ApiController]
+    [Authorize(Roles = "Employee")]
     public class EmployeesController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -24,7 +25,6 @@ namespace ZooManagmentSystem.Controllers.Employees
         }
 
         // GET: api/Employees
-        //[Authorize(Roles = "Manager")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetEmployees()
         {
@@ -44,7 +44,6 @@ namespace ZooManagmentSystem.Controllers.Employees
         }
 
         // GET: api/Employees/5
-        //[Authorize(Roles = "Manager")]
         [HttpGet("{id}")]
         public async Task<ActionResult<EmployeeDto>> GetEmployeeModel(int id)
         {
@@ -72,7 +71,6 @@ namespace ZooManagmentSystem.Controllers.Employees
 
         // PUT: api/Employees/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[Authorize(Roles = "Employee")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmployeeModel(int id, UpdateEmployeeDto employeeModel)
         {
@@ -117,7 +115,7 @@ namespace ZooManagmentSystem.Controllers.Employees
             return Ok(new { message = "Profile edited!" });
         }
 
-        //[Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Manager")]
         [HttpPut("{id}/asManager")]
         public async Task<IActionResult> PutEmployeeAsManagerModel(int id, UpdateEmployeeManagerDto employeeModel)
         {
@@ -201,6 +199,7 @@ namespace ZooManagmentSystem.Controllers.Employees
             return Ok(roles);
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPost]
         [Route("roles")]
         public IActionResult AddNewRole([FromBody] RoleDto roleDto)
@@ -225,6 +224,7 @@ namespace ZooManagmentSystem.Controllers.Employees
 
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpDelete]
         [Route("roles/{id}")]
         public IActionResult DeleteRole(int id)

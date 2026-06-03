@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ZooManagmentSystem.Data;
 using ZooManagmentSystem.Models;
@@ -6,6 +7,7 @@ using ZooManagmentSystem.Models;
 namespace ZooManagmentSystem.Controllers
 {
     [Route("Icon")]
+    [Authorize(Roles = "Employee")]
     public class IconController : Controller
     {
         private readonly AppDbContext _context;

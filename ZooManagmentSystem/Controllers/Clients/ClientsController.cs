@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -24,6 +25,7 @@ namespace ZooManagmentSystem.Controllers.Clients
         }
 
         // for employees only
+        [Authorize(Roles = "Manager, Employee")]
         [Route("getAll")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ClientDto>>> GetClients()
@@ -41,6 +43,7 @@ namespace ZooManagmentSystem.Controllers.Clients
             return Ok(clientDtos);
         }
 
+        [Authorize(Roles = "Client")]
         [Route("{id}")]
         [HttpGet]
         public async Task<ActionResult<ClientDto>> GetClientModel(int id)
@@ -62,6 +65,7 @@ namespace ZooManagmentSystem.Controllers.Clients
             });
         }
 
+        [Authorize(Roles = "Client")]
         [Route("{id}")]
         [HttpPut]
         public async Task<IActionResult> PutClientModel(int id, ClientUpdateDto clientModel)

@@ -1,19 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using ZooManagmentSystem.Data;
+using ZooManagmentSystem.DTOs;
 using ZooManagmentSystem.Models;
 using ZooManagmentSystem.Models.Enums;
-using ZooManagmentSystem.DTOs;
 
 namespace ZooManagmentSystem.Controllers
 {
     [Route("enclosure")]
     [ApiController]
+    [Authorize(Roles = "Employee")]
     public class EnclosuresController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -51,6 +53,7 @@ namespace ZooManagmentSystem.Controllers
         }
 
         // PUT: enclosure/5
+        [Authorize(Roles = "Manager")]
         [Route("{id}")]
         [HttpPut]
         public async Task<IActionResult> PutEnclosureModel(int id, EnclosureUpdateDto enclosureModel)
@@ -103,6 +106,7 @@ namespace ZooManagmentSystem.Controllers
         }
 
         // POST: enclosure
+        [Authorize(Roles = "Manager")]
         [Route("")]
         [HttpPost]
         public async Task<ActionResult<EnclosureModel>> PostEnclosureModel(EnclosureDto enclosureModel)
@@ -122,6 +126,7 @@ namespace ZooManagmentSystem.Controllers
         }
 
         // DELETE: enclosure/5
+        [Authorize(Roles = "Manager")]
         [Route("{id}")]
         [HttpDelete]
         public async Task<IActionResult> DeleteEnclosureModel(int id)
@@ -145,6 +150,7 @@ namespace ZooManagmentSystem.Controllers
             return Ok(await _context.EnclosureTypes.ToListAsync());
         }
 
+        [Authorize(Roles = "Manager")]
         [Route("type")]
         [HttpPost]
         public async Task<ActionResult<EnclosureTypeModel>> PostEnclosureTypeModel(EnclosureTypeModel enclosureTypeModel)
@@ -161,6 +167,7 @@ namespace ZooManagmentSystem.Controllers
             }
         }
 
+        [Authorize(Roles = "Manager")]
         [Route("type/{id}")]
         [HttpPut]
         public async Task<IActionResult> PutEnclosureTypeModel(int id, EnclosureTypeModel enclosureModel)
@@ -190,6 +197,7 @@ namespace ZooManagmentSystem.Controllers
             return Ok(new { message = "Updated enclosure type." });
         }
 
+        [Authorize(Roles = "Manager")]
         [Route("{EnclosureId}/assignAnimal/{AnimalId}")]
         [HttpPut]
         public async Task<IActionResult> AssignAnimal(int EnclosureId, int AnimalId)
@@ -210,6 +218,7 @@ namespace ZooManagmentSystem.Controllers
             return Ok(new { message = "Animal has been assigned successfully." });
         }
 
+        [Authorize(Roles = "Manager")]
         [Route("{EnclosureId}/assignAnimal/{AnimalId}")]
         [HttpDelete]
         public async Task<IActionResult> UnassignAnimal(int EnclosureId, int AnimalId)
@@ -225,7 +234,7 @@ namespace ZooManagmentSystem.Controllers
             return Ok(new { message = "Zwierzę zostało odpięte od wybiegu." });
         }
 
-
+        [Authorize(Roles = "Manager")]
         [Route("type/{id}")]
         [HttpDelete]
         public async Task<IActionResult> DeleteEnclosureTypeModel(int id)

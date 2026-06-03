@@ -1,22 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ZooManagmentSystem.Data;
-using ZooManagmentSystem.Models.Report;
-using ZooManagmentSystem.Models.Client;
-using System.Text.Json;
-using ZooManagmentSystem.DTOs.Reports;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Text.Json;
+using System.Threading.Tasks;
+using ZooManagmentSystem.Data;
+using ZooManagmentSystem.DTOs.Reports;
+using ZooManagmentSystem.Models.Client;
+using ZooManagmentSystem.Models.Report;
 
 namespace ZooManagmentSystem.Controllers
 {
     [Route("report")]
     [ApiController]
+    [Authorize(Roles = "Manager, Employee")]
     public class ReportsController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -28,6 +31,7 @@ namespace ZooManagmentSystem.Controllers
 
         [Route("")]
         [HttpGet]
+        [Authorize(Roles = "Manager")]
         public async Task<ActionResult<IEnumerable<ReportDto>>> GetReports()
         {
             var reports = await _context.Reports
@@ -44,8 +48,30 @@ namespace ZooManagmentSystem.Controllers
             return reports;
         }
 
+        [Route("forEmployee")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ReportDto>>> GetReportsForEmployee()
+        {
+            int employeeId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "EmployeeId")?.Value ?? "0");
+            var reports = await _context.Reports
+            .Where(r => r.AuthorId == employeeId)
+            .Select(r => new ReportDto
+            {
+                Id = r.id,
+                Title = r.Title,
+                Content = r.Content,
+                Type = r.Type,
+                CreatedAt = r.CreatedAt,
+                AuthorId = r.AuthorId,
+            })
+                .ToListAsync();
+            return reports;
+        }
+
+
         [Route("{id}")]
         [HttpGet]
+        [Authorize(Roles = "Manager")]
         public async Task<ActionResult<ReportDto>> GetReportModel(int id)
         {
             var reportModel = await _context.Reports.FindAsync(id);
@@ -78,9 +104,9 @@ namespace ZooManagmentSystem.Controllers
         }
 
 
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Route("forManager")]
         [HttpPost]
+        [Authorize(Roles = "Manager")]
         public async Task<ActionResult> PostReportForManager(ReportCreateDto reportDto)
         {
             var reportModel = new ReportModel
@@ -142,6 +168,7 @@ namespace ZooManagmentSystem.Controllers
 
         [Route("{id}")]
         [HttpDelete]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> DeleteReportModel(int id)
         {
             var reportModel = await _context.Reports.FindAsync(id);
