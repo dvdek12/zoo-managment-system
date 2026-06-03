@@ -86,10 +86,12 @@ namespace ZooManagmentSystem.Controllers.Clients
         }
 
         // GET: /tickets/forClient/5
-        [Authorize(Roles = "Client, Manager, Employee")]
-        [HttpGet("forClient/{clientId}")]
-        public async Task<ActionResult<IEnumerable<TicketDto>>> GetTicketsForClient(int clientId)
+        [Authorize(Roles = "Client")]
+        [HttpGet("forClient")]
+        public async Task<ActionResult<IEnumerable<TicketDto>>> GetTicketsForClient()
         {
+            int clientId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "ClientId").Value ?? "0");
+
             var tickets = await _context.Tickets
                 .Where(t => t.ClientId == clientId)
                 .Include(t => t.EntryTypes)
@@ -125,10 +127,12 @@ namespace ZooManagmentSystem.Controllers.Clients
         }
 
         // POST: tickets
-        [Authorize(Roles = "Client, Manager, Employee")]
+        [Authorize(Roles = "Client")]
         [HttpPost]
         public async Task<ActionResult<TicketModel>> CreateTicket(TicketNewDto ticketModel)
         {
+            int clientId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "ClientId").Value ?? "0");
+
             var entryTypesIds = ticketModel.EntryTypeIds.Select(et => et.Key).ToList();
             var entryTypes = await _context.EntryTypes
                 .Where(et => entryTypesIds.Contains(et.id))
@@ -141,7 +145,7 @@ namespace ZooManagmentSystem.Controllers.Clients
 
             var ticket = new TicketModel
             {
-                ClientId = ticketModel.ClientId,
+                ClientId = clientId,
                 PurchaseDate = DateTime.Now,
                 ValidUntil = DateTime.Now.AddDays(30),
                 Price = totalPrice,

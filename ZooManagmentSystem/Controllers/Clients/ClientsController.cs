@@ -44,10 +44,11 @@ namespace ZooManagmentSystem.Controllers.Clients
         }
 
         [Authorize(Roles = "Client")]
-        [Route("{id}")]
+        [Route("")]
         [HttpGet]
-        public async Task<ActionResult<ClientDto>> GetClientModel(int id)
+        public async Task<ActionResult<ClientDto>> GetClientModel()
         {
+            var id = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "ClientId").Value ?? "0");
             var clientModel = await _context.Clients.FindAsync(id);
 
             if (clientModel == null)
@@ -66,10 +67,11 @@ namespace ZooManagmentSystem.Controllers.Clients
         }
 
         [Authorize(Roles = "Client")]
-        [Route("{id}")]
+        [Route("")]
         [HttpPut]
-        public async Task<IActionResult> PutClientModel(int id, ClientUpdateDto clientModel)
+        public async Task<IActionResult> PutClientModel(ClientUpdateDto clientModel)
         {
+            int id = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "ClientId").Value ?? "0");
 
             if (id != clientModel.Id)
             {

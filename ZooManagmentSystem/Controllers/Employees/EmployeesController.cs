@@ -70,11 +70,11 @@ namespace ZooManagmentSystem.Controllers.Employees
         }
 
         // PUT: api/Employees/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmployeeModel(int id, UpdateEmployeeDto employeeModel)
         {
-            if (id != employeeModel.Id)
+            int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "id").Value ?? "0");
+            if (id != employeeModel.Id || id != userId)
             {
                 return BadRequest();
             }

@@ -42,10 +42,12 @@ namespace ZooManagmentSystem.Controllers
             return Ok(notificationModel);
         }
 
-        [Route("user/{id}")]
+        [Route("forEmployee/")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<NotificationModel>>> GetNotificationsForUser(int id)
+        public async Task<ActionResult<IEnumerable<NotificationModel>>> GetNotificationsForUser()
         {
+            int id = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value ?? "0");
+
             var notificationModel = await _context.Notifications.Where(n => n.UserId == id).ToListAsync();
 
             if (notificationModel == null || !notificationModel.Any())

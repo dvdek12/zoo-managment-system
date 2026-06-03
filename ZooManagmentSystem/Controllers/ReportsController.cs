@@ -53,6 +53,7 @@ namespace ZooManagmentSystem.Controllers
         public async Task<ActionResult<IEnumerable<ReportDto>>> GetReportsForEmployee()
         {
             int employeeId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "EmployeeId")?.Value ?? "0");
+
             var reports = await _context.Reports
             .Where(r => r.AuthorId == employeeId)
             .Select(r => new ReportDto
@@ -139,6 +140,12 @@ namespace ZooManagmentSystem.Controllers
         [HttpPost]
         public async Task<ActionResult> PostReportForEmployee(ReportCreateDto reportDto)
         {
+            int employeeId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "EmployeeId")?.Value ?? "0");
+            if(reportDto.AuthorId != employeeId)
+            {
+                return BadRequest(new { message = "You are not authorized to create this report." });
+            }
+
             var reportModel = new ReportModel
             {
                 Title = reportDto.Title,
