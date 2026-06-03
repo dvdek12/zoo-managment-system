@@ -195,6 +195,11 @@ namespace ZooManagmentSystem.Controllers
                 var id = await _context.Employees.Where(e => e.ApplicationUserId == user.Id).Select(e => e.id).FirstOrDefaultAsync();
                 claims.Add(new Claim("EmployeeId", id.ToString()));
             }
+            else
+            {
+                var id = await _context.Clients.Where(c => c.ApplicationUserId == user.Id).Select(c => c.id).FirstOrDefaultAsync();
+                claims.Add(new Claim("ClientId", id.ToString()));
+            }
 
             // Dynamicznie dodajemy wszystkie role użytkownika do Claimów
             foreach (var role in roles)

@@ -90,6 +90,8 @@ builder.Services.ConfigureApplicationCookie(options => {
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
 
+builder.Services.AddHostedService<DatabaseMonitorService>();
+
 // Configuration for JSON serialization to handle reference loops 
 //Used because of the cycle in the relationship between TicketModel and TicketEntryTypeModel
 //It may issue in the future, than it will be necessary to change the way of handling this relationship

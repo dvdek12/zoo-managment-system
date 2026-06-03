@@ -9,6 +9,7 @@ using ZooManagmentSystem.Data;
 using ZooManagmentSystem.Models.Employee;
 using ZooManagmentSystem.DTOs.Employee;
 using ZooManagmentSystem.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ZooManagmentSystem.Controllers.Employees
 {
@@ -26,6 +27,7 @@ namespace ZooManagmentSystem.Controllers.Employees
         }
 
         // GET: task
+        //[Authorize(Roles = "Employee")]
         [Route("")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskDto>>> GetTasks()
@@ -42,7 +44,8 @@ namespace ZooManagmentSystem.Controllers.Employees
                 AssignedEmployeeId = t.AssignedEmployeeId,
                 RoleId = t.RoleId,
                 EnclosureId = t.EnclosureId,
-                AnimalId = t.AnimalId
+                AnimalId = t.AnimalId,
+                NotificationSent = t.NotificationSent
             }).ToList();
             return Ok(taskDtos);
         }
@@ -152,9 +155,11 @@ namespace ZooManagmentSystem.Controllers.Employees
             if(taskModel.IsCompleted != null)
                 existingTask.IsCompleted = (bool)taskModel.IsCompleted;
 
+            // Notify employee if assigned
             if (taskModel.AssignedEmployeeId != null)
                 await _notification.SendToEmployeeAsync(taskModel.AssignedEmployeeId ?? 0,
                     "New Task!", "You have new task to do: " + existingTask.Name);
+                existingTask.NotificationSent = false;
 
             _context.Entry(existingTask).State = EntityState.Modified;
 
@@ -178,6 +183,7 @@ namespace ZooManagmentSystem.Controllers.Employees
         }
 
         // POST: task
+        //[Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<ActionResult<TaskModel>> PostTaskModel(TaskCreateDto taskModel)
         {
@@ -196,6 +202,9 @@ namespace ZooManagmentSystem.Controllers.Employees
 
             _context.Tasks.Add(newTask);
             await _context.SaveChangesAsync();
+
+            await _notification.SendToEmployeeAsync(taskModel.AssignedEmployeeId ?? 0,
+                "New Task!", "You have new task to do: " + newTask.Name);
 
             return Ok( new { message = "Created task." });
         }

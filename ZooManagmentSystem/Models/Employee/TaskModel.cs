@@ -13,6 +13,8 @@ namespace ZooManagmentSystem.Models.Employee
         public bool IsCompleted { get; set; }
         public int? CategoryId { get; set; }
         public TaskCategoryModel? Category { get; set; }
+        // Flag to track if notification has been sent for this task
+        public bool NotificationSent { get; set; } = false;
 
         // Assaignment details
         public int? AssignedEmployeeId { get; set; }

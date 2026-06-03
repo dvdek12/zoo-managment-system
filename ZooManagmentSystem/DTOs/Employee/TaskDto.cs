@@ -40,6 +40,8 @@ namespace ZooManagmentSystem.DTOs.Employee
         // Optional animals or enclosures related to the task
         public int? EnclosureId { get; set; }
         public int? AnimalId { get; set; }
+        public bool NotificationSent { get; set; }
+
     }
 
     public class TaskUpdateDto
