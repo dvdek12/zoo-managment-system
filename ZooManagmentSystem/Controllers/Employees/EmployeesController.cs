@@ -73,7 +73,7 @@ namespace ZooManagmentSystem.Controllers.Employees
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmployeeModel(int id, UpdateEmployeeDto employeeModel)
         {
-            int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "id").Value ?? "0");
+            int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "EmployeeId").Value ?? "0");
             if (id != employeeModel.Id || id != userId)
             {
                 return BadRequest();
