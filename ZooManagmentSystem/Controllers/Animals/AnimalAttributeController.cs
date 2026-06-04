@@ -63,7 +63,7 @@ namespace ZooManagmentSystem.Controllers.Animals
 
             if (animalAttributeModel == null || animalAttributeModel.Count == 0)
             {
-                return NotFound();
+                return Ok(new List<AnimalAttributeDto>());
             }
 
             var attributeDetails = new List<AnimalAttributeDto>();
