@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -9,6 +10,7 @@ using System.Diagnostics;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using ZooManagmentSystem.Data;
 using ZooManagmentSystem.Hubs;
 using ZooManagmentSystem.Models.Employee;
@@ -105,6 +107,47 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 builder.Services.AddScoped<NotificationService>();
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    // 5 prób logowania / minutę per IP
+    options.AddFixedWindowLimiter("login", opt =>
+    {
+        opt.PermitLimit = 5;
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        opt.QueueLimit = 0;
+    });
+
+    // 3 rejestracje / minutę per IP
+    options.AddFixedWindowLimiter("register", opt =>
+    {
+        opt.PermitLimit = 3;
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        opt.QueueLimit = 0;
+    });
+
+    // 10 generowań PDF / minutę per IP
+    options.AddFixedWindowLimiter("pdf", opt =>
+    {
+        opt.PermitLimit = 10;
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        opt.QueueLimit = 0;
+    });
+
+    // 10 zapytań do zewnętrznego API / minutę per IP
+    options.AddFixedWindowLimiter("externalApi", opt =>
+    {
+        opt.PermitLimit = 10;
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        opt.QueueLimit = 0;
+    });
+});
+
 
 
 var app = builder.Build();
@@ -126,7 +169,7 @@ using (var scope = app.Services.CreateScope())
     var testEmployees = new[]
     {
         new { Email = "anna.nowak@zoo.pl", First = "Anna", Last = "Nowak", Birth = new DateTime(1988, 3, 10) },
-        new { Email = "piotr.wisniewski@zoo.pl", First = "Piotr", Last = "Wi�niewski", Birth = new DateTime(1992, 7, 22) },
+        new { Email = "piotr.wisniewski@zoo.pl", First = "Piotr", Last = "Wi�niewski", Birth = new DateTime(1992, 7, 22) },
     };
     */
 
@@ -181,7 +224,7 @@ using (var scope = app.Services.CreateScope())
 
 
 app.UseSwaggerUI(options => {
-    options.DocExpansion(DocExpansion.None); // wszystko zwini�te
+    options.DocExpansion(DocExpansion.None); // wszystko zwini�te
 });
 
 
@@ -192,6 +235,7 @@ app.UseRouting();
 
 app.UseCors("AllowVue");
 
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 
