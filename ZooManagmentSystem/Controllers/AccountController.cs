@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
@@ -39,6 +40,7 @@ namespace ZooManagmentSystem.Controllers
         // POST: /Account/Register
         [Route("Register")]
         [HttpPost]
+        [EnableRateLimiting("register")]
         public async Task<IActionResult> Register([FromBody] ClientRegisterDto model)
         {
             if (!ModelState.IsValid)
@@ -73,6 +75,7 @@ namespace ZooManagmentSystem.Controllers
         [Authorize(Roles = "Manager")]
         [Route("RegisterEmployee")]
         [HttpPost]
+        [EnableRateLimiting("register")]
         public async Task<IActionResult> RegisterEmployee([FromBody] EmployeeRegisterDto model)
         {
             if (!ModelState.IsValid)
@@ -119,6 +122,7 @@ namespace ZooManagmentSystem.Controllers
         // POST: /Account/Login
         [Route("Login")]
         [HttpPost]
+        [EnableRateLimiting("login")]
         public async Task<IActionResult> Login([FromBody] LoginViewModel model)
         {
             if (!ModelState.IsValid)

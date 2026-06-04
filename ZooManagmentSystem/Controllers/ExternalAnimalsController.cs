@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace ZooManagmentSystem.Controllers
 {
@@ -13,6 +14,7 @@ namespace ZooManagmentSystem.Controllers
         }
 
         [HttpGet("{name}")]
+        [EnableRateLimiting("externalApi")]
         public async Task<IActionResult> GetAnimal(string name)
         {
             var client = _httpClientFactory.CreateClient("ExternalAnimalsClient");

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
@@ -192,6 +193,7 @@ namespace ZooManagmentSystem.Controllers
 
         [Route("generatePDF/{id}")]
         [HttpGet]
+        [EnableRateLimiting("pdf")]
         public async Task<IActionResult> GeneratePDF(int id)
         {
 
