@@ -66,7 +66,7 @@ namespace ZooManagmentSystem.Controllers.Animals
             foreach (var attribute in animal.Attributes)
             {
                 string attributeName = _context.Attributes.Find(attribute.AttributeId)?.AttributeName ?? "Unknown";
-                animalDto.Attributes.Add(attributeName, attribute.AttributeValue);
+                animalDto.Attributes.TryAdd(attributeName, attribute.AttributeValue);
             }
             // Setting histories
             foreach (var history in animal.AnimalHistories)
