@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ZooManagmentSystem.Data;
 using ZooManagmentSystem.Models;
@@ -8,6 +9,7 @@ namespace ZooManagmentSystem.Controllers
 {
     [Route("notifications")]
     [ApiController]
+    [Authorize(Roles = "Employee")]
     public class NotificationController : Controller
     {
         private readonly AppDbContext _context;
@@ -17,6 +19,7 @@ namespace ZooManagmentSystem.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "Manager")]
         [Route("")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<NotificationModel>>> GetAllNotifications()
@@ -39,10 +42,12 @@ namespace ZooManagmentSystem.Controllers
             return Ok(notificationModel);
         }
 
-        [Route("user/{id}")]
+        [Route("forEmployee/")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<NotificationModel>>> GetNotificationsForUser(int id)
+        public async Task<ActionResult<IEnumerable<NotificationModel>>> GetNotificationsForUser()
         {
+            int id = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value ?? "0");
+
             var notificationModel = await _context.Notifications.Where(n => n.UserId == id).ToListAsync();
 
             if (notificationModel == null || !notificationModel.Any())

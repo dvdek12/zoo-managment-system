@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -24,6 +25,7 @@ namespace ZooManagmentSystem.Controllers.Clients
         }
 
         // for employees only
+        [Authorize(Roles = "Manager, Employee")]
         [Route("getAll")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ClientDto>>> GetClients()
@@ -41,10 +43,12 @@ namespace ZooManagmentSystem.Controllers.Clients
             return Ok(clientDtos);
         }
 
-        [Route("{id}")]
+        [Authorize(Roles = "Client")]
+        [Route("")]
         [HttpGet]
-        public async Task<ActionResult<ClientDto>> GetClientModel(int id)
+        public async Task<ActionResult<ClientDto>> GetClientModel()
         {
+            var id = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "ClientId").Value ?? "0");
             var clientModel = await _context.Clients.FindAsync(id);
 
             if (clientModel == null)
@@ -62,10 +66,12 @@ namespace ZooManagmentSystem.Controllers.Clients
             });
         }
 
-        [Route("{id}")]
+        [Authorize(Roles = "Client")]
+        [Route("")]
         [HttpPut]
-        public async Task<IActionResult> PutClientModel(int id, ClientUpdateDto clientModel)
+        public async Task<IActionResult> PutClientModel(ClientUpdateDto clientModel)
         {
+            int id = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "ClientId").Value ?? "0");
 
             if (id != clientModel.Id)
             {

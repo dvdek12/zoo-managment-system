@@ -9,11 +9,13 @@ using ZooManagmentSystem.Data;
 using ZooManagmentSystem.Models.Animal;
 using ZooManagmentSystem.DTOs.Animal;
 using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ZooManagmentSystem.Controllers.Animals
 {
     [Route("animals")]
     [ApiController]
+    [Authorize(Roles = "Employee")]
     public class AnimalAttributeController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -54,6 +56,7 @@ namespace ZooManagmentSystem.Controllers.Animals
         // Get all attributes for a specific animal
         [Route("{id}/attributes")]
         [HttpGet]
+
         public async Task<ActionResult<IEnumerable<AnimalAttributeDto>>> GetAnimalAttributeModel(int id)
         {
             var animalAttributeModel = await _context.AnimalAttributes.Where(t => t.AnimalId == id).ToListAsync();
@@ -91,6 +94,7 @@ namespace ZooManagmentSystem.Controllers.Animals
         }
 
         // PUT: Animal/5/Attribute/5
+        [Authorize(Roles = "Manager")]
         [HttpPut("{animalId}/attribute/{attributeId}")]
         public async Task<IActionResult> PutAnimalAttributeModel(int animalId, int attributeId, AnimalAttributeUpdateDto animalAttributeModel)
         {
@@ -131,7 +135,7 @@ namespace ZooManagmentSystem.Controllers.Animals
         }
 
         // POST: Animal/Attribute
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "Manager")]
         [Route("{animalId}/attribute")]
         [HttpPost]
         public async Task<ActionResult<AnimalAttributeModel>> PostAnimalAttributeModel(int animalId, AnimalAttributeCreateDto animalAttributeModel)
@@ -149,6 +153,7 @@ namespace ZooManagmentSystem.Controllers.Animals
         }
 
         // DELETE: Animal/5/Attribute/5
+        [Authorize(Roles = "Manager")]
         [HttpDelete("{animalId}/attribute/{attributeId}")]
         public async Task<IActionResult> DeleteAnimalAttributeModel(int animalId, int attributeId)
         {

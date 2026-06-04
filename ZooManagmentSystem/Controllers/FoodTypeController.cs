@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using ZooManagmentSystem.Data;
 using ZooManagmentSystem.Models.Dictionaries;
 using ZooManagmentSystem.Models.Enums;
@@ -13,6 +14,7 @@ namespace ZooManagmentSystem.Controllers.Animals
 {
     [Route("foodType")]
     [ApiController]
+    [Authorize(Roles = "Employee")]
     public class FoodTypeController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -78,7 +80,7 @@ namespace ZooManagmentSystem.Controllers.Animals
         }
         */
 
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "Manager")]
         [Route("")]
         [HttpPost]
         public async Task<ActionResult<FoodTypeModel>> PostFoodTypeModel(FoodTypeModel foodTypeModel)
@@ -89,6 +91,7 @@ namespace ZooManagmentSystem.Controllers.Animals
             return Ok(new { message = "Food type created successfully!" });
         }
 
+        [Authorize(Roles = "Manager")]
         [Route("{id}")]
         [HttpDelete]
         public async Task<IActionResult> DeleteFoodTypeModel(int id)

@@ -15,6 +15,7 @@ namespace ZooManagmentSystem.Controllers.Employees
 {
     [Route("task")]
     [ApiController]
+    [Authorize(Roles = "Employee")]
     public class TasksController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -27,7 +28,7 @@ namespace ZooManagmentSystem.Controllers.Employees
         }
 
         // GET: task
-        //[Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Manager")]
         [Route("")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskDto>>> GetTasks()
@@ -105,6 +106,7 @@ namespace ZooManagmentSystem.Controllers.Employees
             return Ok(taskDtos);
         }
 
+        [Authorize(Roles = "Manager")]
         [Route("forRole/{roleId}")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskDto>>> GetTasksForRole(int roleId)
@@ -133,6 +135,7 @@ namespace ZooManagmentSystem.Controllers.Employees
         }
 
         // PUT: task/5
+        [Authorize(Roles = "Manager")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTaskModel(int id, TaskUpdateDto taskModel)
         {
@@ -183,7 +186,7 @@ namespace ZooManagmentSystem.Controllers.Employees
         }
 
         // POST: task
-        //[Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<ActionResult<TaskModel>> PostTaskModel(TaskCreateDto taskModel)
         {
@@ -210,6 +213,7 @@ namespace ZooManagmentSystem.Controllers.Employees
         }
 
         // DELETE: task/5
+        [Authorize(Roles = "Manager")]
         [Route("{id}")]
         [HttpDelete]
         public async Task<IActionResult> DeleteTaskModel(int id)

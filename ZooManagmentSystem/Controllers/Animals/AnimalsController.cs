@@ -12,8 +12,8 @@ using ZooManagmentSystem.Models.Enums;
 namespace ZooManagmentSystem.Controllers.Animals
 {
     [ApiController]
-    [Route("animals")] 
-    //[Authorize(Roles = ("Employee"))]
+    [Route("animals")]
+    [Authorize(Roles = "Employee")]
     public class AnimalsController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -98,6 +98,7 @@ namespace ZooManagmentSystem.Controllers.Animals
             return Ok(animalDto);
         }
 
+        [Authorize(Roles = "Manager")]
         [Route("")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AnimalCreateDto animal)
@@ -147,6 +148,7 @@ namespace ZooManagmentSystem.Controllers.Animals
             return Ok(animalHistoryDtos);
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPost]
         [Route("{id}/addHistory")]
         public IActionResult AddAnimalHistory(int id, AnimalHistoryCreateDto animalHistoryDto)
@@ -171,6 +173,7 @@ namespace ZooManagmentSystem.Controllers.Animals
             return Ok(new { message = "Animal history added successfuly!" });
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPut]
         [Route("{id}")]
         public IActionResult Edit(int id, AnimalUpdateDto animal)
@@ -192,6 +195,7 @@ namespace ZooManagmentSystem.Controllers.Animals
             return Ok("Animal updated!");
         }
 
+        [Authorize(Roles = "Manager")]
         [Route("{id}")]
         [HttpDelete]
         public IActionResult Delete(int id)
