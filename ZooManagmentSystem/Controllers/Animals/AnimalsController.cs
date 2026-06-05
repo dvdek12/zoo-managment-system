@@ -60,6 +60,8 @@ namespace ZooManagmentSystem.Controllers.Animals
                 DateOfArrival = animal.DateOfArrival,
                 EnclosureId = animal.EnclosureId,
                 FoodId = animal.FoodId,
+                FeedingsPerDay = animal.FeedingsPerDay,
+                AmountPerFeeding = animal.AmountPerFeeding,
                 IconId = animal.IconId
             };
             // Setting attributes
@@ -114,6 +116,8 @@ namespace ZooManagmentSystem.Controllers.Animals
                     DateOfArrival = animal.DateOfArrival,
                     EnclosureId = animal.EnclosureId,
                     FoodId = animal.FoodId,
+                    FeedingsPerDay = animal.FeedingsPerDay,
+                    AmountPerFeeding = animal.AmountPerFeeding,
                     IconId = animal.IconId
                 };
 
@@ -188,6 +192,8 @@ namespace ZooManagmentSystem.Controllers.Animals
             existingAnimal.DateOfArrival = animal.DateOfArrival ?? existingAnimal.DateOfArrival;
             existingAnimal.EnclosureId = animal.EnclosureId ?? existingAnimal.EnclosureId;
             existingAnimal.FoodId = animal.FoodId ?? existingAnimal.FoodId;
+            existingAnimal.FeedingsPerDay = animal.FeedingsPerDay ?? existingAnimal.FeedingsPerDay;
+            existingAnimal.AmountPerFeeding = animal.AmountPerFeeding ?? existingAnimal.AmountPerFeeding;
             existingAnimal.IconId = animal.IconId ?? existingAnimal.IconId;
 
             _context.Animals.Update(existingAnimal);
