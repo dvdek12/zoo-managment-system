@@ -72,6 +72,18 @@ namespace ZooManagmentSystem.Data
                 .HasForeignKey(a => a.AnimalTypeId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<EmployeeModel>()
+                .HasOne(e => e.Role)
+                .WithMany()
+                .HasForeignKey(e => e.RoleId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<TaskModel>()
+                .HasOne(t => t.Role)
+                .WithMany()
+                .HasForeignKey(t => t.RoleId)
+                .OnDelete(DeleteBehavior.SetNull);
+
         }
     }
 
