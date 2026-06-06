@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ZooManagmentSystem.Data;
 
@@ -11,9 +12,11 @@ using ZooManagmentSystem.Data;
 namespace ZooManagmentSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260606133703_SetNullOnDeletingRole")]
+    partial class SetNullOnDeletingRole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -255,9 +258,6 @@ namespace ZooManagmentSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<decimal?>("AmountPerFeeding")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<DateTime?>("DateOfArrival")
                         .HasColumnType("datetime2");
 
@@ -266,12 +266,6 @@ namespace ZooManagmentSystem.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("EnclosureId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("FeedingEmployeeId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("FeedingsPerDay")
                         .HasColumnType("int");
 
                     b.Property<int?>("FoodId")
@@ -294,8 +288,6 @@ namespace ZooManagmentSystem.Migrations
                     b.HasKey("id");
 
                     b.HasIndex("EnclosureId");
-
-                    b.HasIndex("FeedingEmployeeId");
 
                     b.HasIndex("FoodId");
 
@@ -889,10 +881,6 @@ namespace ZooManagmentSystem.Migrations
                         .WithMany("Animals")
                         .HasForeignKey("EnclosureId");
 
-                    b.HasOne("ZooManagmentSystem.Models.Employee.EmployeeModel", "FeedingEmployee")
-                        .WithMany("AssignedAnimals")
-                        .HasForeignKey("FeedingEmployeeId");
-
                     b.HasOne("ZooManagmentSystem.Models.Enums.FoodTypeModel", "Food")
                         .WithMany()
                         .HasForeignKey("FoodId");
@@ -902,8 +890,6 @@ namespace ZooManagmentSystem.Migrations
                         .HasForeignKey("IconId");
 
                     b.Navigation("Enclosure");
-
-                    b.Navigation("FeedingEmployee");
 
                     b.Navigation("Food");
 
@@ -1092,8 +1078,6 @@ namespace ZooManagmentSystem.Migrations
 
             modelBuilder.Entity("ZooManagmentSystem.Models.Employee.EmployeeModel", b =>
                 {
-                    b.Navigation("AssignedAnimals");
-
                     b.Navigation("Tasks");
                 });
 
