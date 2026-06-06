@@ -13,6 +13,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using ZooManagmentSystem.Data;
 using ZooManagmentSystem.DTOs.Reports;
+using ZooManagmentSystem.Models.Animal;
 using ZooManagmentSystem.Models.Client;
 using ZooManagmentSystem.Models.Report;
 
@@ -124,6 +125,10 @@ namespace ZooManagmentSystem.Controllers
             {
                 contentObj = GenerateVisitorStatisticsReport();
             }
+            else if (reportDto.Type == ReportType.FeedingPlan)
+            {
+                contentObj = GenerateFeedingPlanReport();
+            }
             else
             {
                 return BadRequest(new { message = "Report type not supported yet." });
@@ -142,7 +147,7 @@ namespace ZooManagmentSystem.Controllers
         public async Task<ActionResult> PostReportForEmployee(ReportCreateDto reportDto)
         {
             int employeeId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "EmployeeId")?.Value ?? "0");
-            if(reportDto.AuthorId != employeeId)
+            if (reportDto.AuthorId != employeeId)
             {
                 return BadRequest(new { message = "You are not authorized to create this report." });
             }
@@ -158,8 +163,7 @@ namespace ZooManagmentSystem.Controllers
             object contentObj = null;
             if (reportDto.Type == ReportType.FeedingPlan)
             {
-                //contentObj = GenerateFeedingPlanReport();
-                return BadRequest(new { message = "Report type not supported yet." });
+                contentObj = GenerateFeedingPlanReport();
             }
             else
             {
@@ -239,6 +243,52 @@ namespace ZooManagmentSystem.Controllers
                                 {
                                     var percent = dto.Percentages != null && dto.Percentages.ContainsKey(kvp.Key) ? dto.Percentages[kvp.Key] : 0m;
                                     col.Item().Text($"{kvp.Key}: {kvp.Value} ({percent}%)");
+                                }
+                            }
+                            else
+                            {
+                                // Fallback: print raw content
+                                col.Item().Text(report.Content);
+                            }
+                        }
+                        else if(report.Type == ReportType.FeedingPlan)
+                        {
+                            FeedingPlanDto dto = null;
+                            try
+                            {
+                                dto = JsonSerializer.Deserialize<FeedingPlanDto>(report.Content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                            }
+                            catch
+                            {
+                                dto = null;
+                            }
+                            if (dto != null)
+                            {
+                                col.Item().Text($"Plan for: {dto.date}");
+                                col.Item().Text($"Animals to feed today: {dto.AnimalCount}");
+                                col.Item().PaddingTop(10).Text("Food needed:")
+                                    .FontSize(18).Bold().FontColor(Colors.LightGreen.Darken3);
+
+                                foreach (var foodType in dto.FoodNeeded)
+                                {
+                                    col.Item().Text($"{foodType.Key}: {foodType.Value}");
+                                }
+
+                                col.Item().PaddingTop(10).Text("Feeding plan:")
+                                    .FontSize(18).Bold().FontColor(Colors.LightGreen.Darken3);
+
+
+                                var feedingDetails = dto.FeedingDetails
+                                    .OrderByDescending(f => f.quantity)
+                                    .ToList();
+                                foreach (var details in feedingDetails)
+                                {
+                                    col.Item().Text($"{details.animalName}")
+                                        .FontSize(16).Bold();
+                                    col.Item().Text($"Enclosure: {details.enclosureName}");
+                                    col.Item().Text($"Food: {details.foodType}");
+                                    col.Item().Text($"Quantity: {details.quantity} servings of {details.serving} each");
+                                    col.Spacing(5);
                                 }
                             }
                             else
@@ -337,7 +387,68 @@ namespace ZooManagmentSystem.Controllers
 
             return dto;
         }
-    }
 
-    
+        private FeedingPlanDto GenerateFeedingPlanReport()
+        {
+            DateTime now = DateTime.Now;
+
+            int employeeId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "EmployeeId")?.Value ?? "0");
+            var employee = _context.Employees.Find(employeeId);
+            if (employee == null)
+            {
+                return null;
+            }
+
+            List<AnimalModel> animals = _context.Animals
+                .Where(a => a.FeedingEmployeeId == employeeId)
+                .Include(a => a.Food)
+                .ToList();
+
+            if(animals.Count == 0)
+            {
+                Console.WriteLine("No animals found for employee");
+                return null;
+            }
+
+            Dictionary<string, decimal> foodNeeded = new Dictionary<string, decimal>();
+            List<FeedingDetails> feedingDetails = new List<FeedingDetails>();
+
+            FeedingPlanDto feedingPlan = new FeedingPlanDto
+            {
+                date = now.ToString("dd.MM.yyyy"),
+                AnimalCount = animals.Count,
+            };
+
+            foreach (var animal in animals) 
+            {
+                FeedingDetails details = new FeedingDetails
+                {
+                    animalName = animal.Name,
+                    enclosureName = animal.Enclosure != null ? animal.Enclosure.Name : "Unknown",
+                    quantity = animal.FeedingsPerDay ?? 0,
+                    serving = animal.AmountPerFeeding ?? 0m,
+                    foodType = animal.Food != null ? animal.Food.FoodName : "Unknown"
+                };
+                feedingDetails.Add(details);
+
+                if (animal.Food != null)
+                {
+                    if (foodNeeded.ContainsKey(animal.Food.FoodName))
+                    {
+                        foodNeeded[animal.Food.FoodName] += details.quantity * details.serving;
+                    }
+                    else
+                    {
+                        foodNeeded[animal.Food.FoodName] = details.quantity * details.serving;
+                    }
+                }
+            }
+            feedingPlan.FoodNeeded = foodNeeded;
+            feedingPlan.FeedingDetails = feedingDetails;
+
+
+            return feedingPlan;
+        }
+
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using ZooManagmentSystem.Data;
+using ZooManagmentSystem.Models.Animal;
 
 namespace ZooManagmentSystem.Models.Employee
 {
@@ -14,6 +15,7 @@ namespace ZooManagmentSystem.Models.Employee
         public int? RoleId { get; set; }
         public RoleModel? Role { get; set; }
         public List<TaskModel>? Tasks { get; set; }
+        public List<AnimalModel>? AssignedAnimals { get; set; }
 
         public string ApplicationUserId { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
