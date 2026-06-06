@@ -403,11 +403,11 @@ namespace ZooManagmentSystem.Controllers
                 .Where(a => a.FeedingEmployeeId == employeeId)
                 .Include(a => a.Food)
                 .ToList();
-            foreach (var animal in animals)
+
+            if(animals.Count == 0)
             {
-                Console.WriteLine(animal.Name);
-                Console.WriteLine(animal.FeedingEmployeeId);
-                Console.WriteLine(animal.Food != null ? animal.Food.FoodName : "No food");
+                Console.WriteLine("No animals found for employee");
+                return null;
             }
 
             Dictionary<string, decimal> foodNeeded = new Dictionary<string, decimal>();
@@ -429,6 +429,7 @@ namespace ZooManagmentSystem.Controllers
                     serving = animal.AmountPerFeeding ?? 0m,
                     foodType = animal.Food != null ? animal.Food.FoodName : "Unknown"
                 };
+                feedingDetails.Add(details);
 
                 if (animal.Food != null)
                 {

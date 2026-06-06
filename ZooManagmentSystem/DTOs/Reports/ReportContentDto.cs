@@ -14,7 +14,7 @@ namespace ZooManagmentSystem.DTOs.Reports
     public class FeedingPlanDto
     {
         public string date { get; set; }
-        public Dictionary<string, decimal> FoodNeeded = new Dictionary<string, decimal>();
+        public Dictionary<string, decimal> FoodNeeded { get; set; } = new Dictionary<string, decimal>();
         public int AnimalCount { get; set; }
         public List<FeedingDetails> FeedingDetails { get; set; } = new List<FeedingDetails>();
 
@@ -22,10 +22,10 @@ namespace ZooManagmentSystem.DTOs.Reports
 
     public class FeedingDetails
     {
-        public string animalName;
-        public string enclosureName;
-        public int quantity;
-        public decimal serving;
-        public string foodType;
+        public string animalName { get; set; }
+        public string enclosureName { get; set; }
+        public int quantity { get; set; }
+        public decimal serving { get; set; }
+        public string foodType { get; set; }
     }
 }
