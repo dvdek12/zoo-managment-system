@@ -12,6 +12,7 @@ namespace ZooManagmentSystem.DTOs.Animal
         public string? Origin { get; set; }
         public DateTime? DateOfArrival { get; set; }
         public int? EnclosureId { get; set; }
+        public int? FeedingEmployeeId { get; set; }
         public int? FoodId { get; set; }
         public int? FeedingsPerDay { get; set; }
         public decimal? AmountPerFeeding { get; set; }
@@ -39,6 +40,7 @@ namespace ZooManagmentSystem.DTOs.Animal
         public string? Origin { get; set; }
         public DateTime? DateOfArrival { get; set; }
         public int? EnclosureId { get; set; }
+        public int? FeedingEmployeeId { get; set; }
         public int? FoodId { get; set; }
         public int? FeedingsPerDay { get; set; }
         public decimal? AmountPerFeeding { get; set; }
@@ -58,6 +60,8 @@ namespace ZooManagmentSystem.DTOs.Animal
         public int? IconId { get; set; }
         // Navigation properties
         public EnclosureDto? Enclosure { get; set; }
+        public int? FeedingEmployeeId { get; set; }  
+        public string? FeedingEmployeeName { get; set; }
         public string? Food { get; set; }
         public int? FeedingsPerDay { get; set; }
         public decimal? AmountPerFeeding { get; set; }

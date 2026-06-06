@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using ZooManagmentSystem.Models.Enums;
+using ZooManagmentSystem.Models.Employee;
 
 namespace ZooManagmentSystem.Models.Animal
 {
@@ -17,6 +18,8 @@ namespace ZooManagmentSystem.Models.Animal
         public List<AnimalAttributeModel> Attributes { get; set; } = new List<AnimalAttributeModel>();
 
         // Feeding
+        public int? FeedingEmployeeId { get; set; }
+        public EmployeeModel? FeedingEmployee { get; set; }
         public int? FoodId { get; set; }
         public FoodTypeModel? Food { get; set; }
         public int? FeedingsPerDay { get; set; }

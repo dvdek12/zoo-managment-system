@@ -244,7 +244,7 @@ namespace ZooManagmentSystem.Migrations
 
                     b.HasIndex("AttributeId");
 
-                    b.ToTable("AnimalAttributes");
+                    b.ToTable("AnimalAttributes", (string)null);
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.Animal.AnimalModel", b =>
@@ -255,9 +255,6 @@ namespace ZooManagmentSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<decimal?>("AmountPerFeeding")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<DateTime?>("DateOfArrival")
                         .HasColumnType("datetime2");
 
@@ -266,9 +263,6 @@ namespace ZooManagmentSystem.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("EnclosureId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("FeedingsPerDay")
                         .HasColumnType("int");
 
                     b.Property<int?>("FoodId")
@@ -296,7 +290,7 @@ namespace ZooManagmentSystem.Migrations
 
                     b.HasIndex("IconId");
 
-                    b.ToTable("Animals");
+                    b.ToTable("Animals", (string)null);
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.Animal.AttributeModel", b =>
@@ -321,7 +315,7 @@ namespace ZooManagmentSystem.Migrations
 
                     b.HasIndex("AnimalTypeId");
 
-                    b.ToTable("Attributes");
+                    b.ToTable("Attributes", (string)null);
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.AnimalHistoryModel", b =>
@@ -356,7 +350,7 @@ namespace ZooManagmentSystem.Migrations
 
                     b.HasIndex("ConditionId");
 
-                    b.ToTable("AnimalHistories");
+                    b.ToTable("AnimalHistories", (string)null);
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.Client.ClientModel", b =>
@@ -394,7 +388,7 @@ namespace ZooManagmentSystem.Migrations
                     b.HasIndex("ApplicationUserId")
                         .IsUnique();
 
-                    b.ToTable("Clients");
+                    b.ToTable("Clients", (string)null);
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.Client.EntryTypeModel", b =>
@@ -414,7 +408,7 @@ namespace ZooManagmentSystem.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("EntryTypes");
+                    b.ToTable("EntryTypes", (string)null);
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.Client.TicketEntryTypeModel", b =>
@@ -440,7 +434,7 @@ namespace ZooManagmentSystem.Migrations
 
                     b.HasIndex("TicketId");
 
-                    b.ToTable("TicketEntryTypes");
+                    b.ToTable("TicketEntryTypes", (string)null);
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.Client.TicketModel", b =>
@@ -467,7 +461,7 @@ namespace ZooManagmentSystem.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("Tickets");
+                    b.ToTable("Tickets", (string)null);
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.Dictionaries.AnimalConditionModel", b =>
@@ -484,7 +478,7 @@ namespace ZooManagmentSystem.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("AnimalConditions");
+                    b.ToTable("AnimalConditions", (string)null);
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.Employee.EmployeeModel", b =>
@@ -537,7 +531,7 @@ namespace ZooManagmentSystem.Migrations
 
                     b.HasIndex("SupervisorId");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.Employee.RoleModel", b =>
@@ -561,7 +555,7 @@ namespace ZooManagmentSystem.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.Employee.TaskModel", b =>
@@ -616,7 +610,7 @@ namespace ZooManagmentSystem.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Tasks");
+                    b.ToTable("Tasks", (string)null);
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.EnclosureModel", b =>
@@ -645,7 +639,7 @@ namespace ZooManagmentSystem.Migrations
 
                     b.HasIndex("TypeId");
 
-                    b.ToTable("Enclosures");
+                    b.ToTable("Enclosures", (string)null);
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.Enums.AnimalTypeModel", b =>
@@ -662,7 +656,7 @@ namespace ZooManagmentSystem.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("AnimalType");
+                    b.ToTable("AnimalType", (string)null);
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.Enums.EnclosureTypeModel", b =>
@@ -679,7 +673,7 @@ namespace ZooManagmentSystem.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("EnclosureTypes");
+                    b.ToTable("EnclosureTypes", (string)null);
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.Enums.FoodTypeModel", b =>
@@ -696,7 +690,7 @@ namespace ZooManagmentSystem.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("FoodTypes");
+                    b.ToTable("FoodTypes", (string)null);
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.Enums.TaskCategoryModel", b =>
@@ -713,7 +707,7 @@ namespace ZooManagmentSystem.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("TaskCategories");
+                    b.ToTable("TaskCategories", (string)null);
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.IconModel", b =>
@@ -738,7 +732,7 @@ namespace ZooManagmentSystem.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("Icons");
+                    b.ToTable("Icons", (string)null);
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.NotificationModel", b =>
@@ -768,7 +762,7 @@ namespace ZooManagmentSystem.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("ZooManagmentSystem.Models.Report.ReportModel", b =>
@@ -800,7 +794,7 @@ namespace ZooManagmentSystem.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("Reports");
+                    b.ToTable("Reports", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

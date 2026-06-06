@@ -13,7 +13,7 @@ namespace ZooManagmentSystem.Controllers.Animals
 {
     [ApiController]
     [Route("animals")]
-    [Authorize(Roles = "Employee")]
+    //[Authorize(Roles = "Employee")]
     public class AnimalsController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -59,6 +59,7 @@ namespace ZooManagmentSystem.Controllers.Animals
                 Origin = animal.Origin,
                 DateOfArrival = animal.DateOfArrival,
                 EnclosureId = animal.EnclosureId,
+                FeedingEmployeeId = animal.FeedingEmployeeId,
                 FoodId = animal.FoodId,
                 FeedingsPerDay = animal.FeedingsPerDay,
                 AmountPerFeeding = animal.AmountPerFeeding,
@@ -93,14 +94,16 @@ namespace ZooManagmentSystem.Controllers.Animals
                 Description = enclosure.Description
             } : null;
 
-            //setting food
+            //setting food and feeding employee
+            var feedingEmployee = _context.Employees.Find(animal.FeedingEmployeeId);
+            animalDto.FeedingEmployeeName = feedingEmployee != null ? feedingEmployee.Email : null;
             var food = _context.FoodTypes.Find(animal.FoodId);
             animalDto.Food = food != null ? food.FoodName : null;
 
             return Ok(animalDto);
         }
 
-        [Authorize(Roles = "Manager")]
+        //[Authorize(Roles = "Manager")]
         [Route("")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AnimalCreateDto animal)
@@ -115,6 +118,7 @@ namespace ZooManagmentSystem.Controllers.Animals
                     Origin = animal.Origin,
                     DateOfArrival = animal.DateOfArrival,
                     EnclosureId = animal.EnclosureId,
+                    FeedingEmployeeId = animal.FeedingEmployeeId,
                     FoodId = animal.FoodId,
                     FeedingsPerDay = animal.FeedingsPerDay,
                     AmountPerFeeding = animal.AmountPerFeeding,
@@ -152,7 +156,7 @@ namespace ZooManagmentSystem.Controllers.Animals
             return Ok(animalHistoryDtos);
         }
 
-        [Authorize(Roles = "Manager")]
+        //[Authorize(Roles = "Manager")]
         [HttpPost]
         [Route("{id}/addHistory")]
         public IActionResult AddAnimalHistory(int id, AnimalHistoryCreateDto animalHistoryDto)
@@ -177,7 +181,7 @@ namespace ZooManagmentSystem.Controllers.Animals
             return Ok(new { message = "Animal history added successfuly!" });
         }
 
-        [Authorize(Roles = "Manager")]
+        //[Authorize(Roles = "Manager")]
         [HttpPut]
         [Route("{id}")]
         public IActionResult Edit(int id, AnimalUpdateDto animal)
@@ -191,6 +195,7 @@ namespace ZooManagmentSystem.Controllers.Animals
             existingAnimal.Origin = animal.Origin ?? existingAnimal.Origin;
             existingAnimal.DateOfArrival = animal.DateOfArrival ?? existingAnimal.DateOfArrival;
             existingAnimal.EnclosureId = animal.EnclosureId ?? existingAnimal.EnclosureId;
+            existingAnimal.FeedingEmployeeId = animal.FeedingEmployeeId ?? existingAnimal.FeedingEmployeeId;
             existingAnimal.FoodId = animal.FoodId ?? existingAnimal.FoodId;
             existingAnimal.FeedingsPerDay = animal.FeedingsPerDay ?? existingAnimal.FeedingsPerDay;
             existingAnimal.AmountPerFeeding = animal.AmountPerFeeding ?? existingAnimal.AmountPerFeeding;
@@ -201,7 +206,7 @@ namespace ZooManagmentSystem.Controllers.Animals
             return Ok("Animal updated!");
         }
 
-        [Authorize(Roles = "Manager")]
+        //[Authorize(Roles = "Manager")]
         [Route("{id}")]
         [HttpDelete]
         public IActionResult Delete(int id)
