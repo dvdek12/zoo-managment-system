@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -25,10 +26,12 @@ namespace ZooManagmentSystem.Controllers
     public class ReportsController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IValidator<ReportCreateDto> _validator;
 
-        public ReportsController(AppDbContext context)
+        public ReportsController(AppDbContext context, IValidator<ReportCreateDto> validator)
         {
             _context = context;
+            _validator = validator;
         }
 
         [Route("")]
@@ -112,6 +115,10 @@ namespace ZooManagmentSystem.Controllers
         [Authorize(Roles = "Manager")]
         public async Task<ActionResult> PostReportForManager(ReportCreateDto reportDto)
         {
+            var validation = await _validator.ValidateAsync(reportDto);
+            if (!validation.IsValid)
+                return BadRequest(validation.Errors);
+
             var reportModel = new ReportModel
             {
                 Title = reportDto.Title,
@@ -146,6 +153,10 @@ namespace ZooManagmentSystem.Controllers
         [HttpPost]
         public async Task<ActionResult> PostReportForEmployee(ReportCreateDto reportDto)
         {
+            var validation = await _validator.ValidateAsync(reportDto);
+            if (!validation.IsValid)
+                return BadRequest(validation.Errors);
+
             int employeeId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "EmployeeId")?.Value ?? "0");
             if (reportDto.AuthorId != employeeId)
             {

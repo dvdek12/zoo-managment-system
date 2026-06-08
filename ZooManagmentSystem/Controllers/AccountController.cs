@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -25,15 +26,21 @@ namespace ZooManagmentSystem.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IConfiguration _configuration;
         private readonly AppDbContext _context;
+        private readonly IValidator<ClientRegisterDto> _clientValidator;
+        private readonly IValidator<EmployeeRegisterDto> _employeeValidator;
 
         public AccountController(IConfiguration configuration, UserManager<ApplicationUser> userManager,
                                  SignInManager<ApplicationUser> signInManager,
-                                 AppDbContext context)
+                                 AppDbContext context,
+                                 IValidator<ClientRegisterDto> clientValidator,
+                                 IValidator<EmployeeRegisterDto> employeeValidator)
         {
             _configuration = configuration;
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
+            _clientValidator = clientValidator;
+            _employeeValidator = employeeValidator;
         }
 
 
@@ -43,6 +50,10 @@ namespace ZooManagmentSystem.Controllers
         [EnableRateLimiting("register")]
         public async Task<IActionResult> Register([FromBody] ClientRegisterDto model)
         {
+            var validation = await _clientValidator.ValidateAsync(model);
+            if (!validation.IsValid)
+                return BadRequest(validation.Errors);
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -78,6 +89,10 @@ namespace ZooManagmentSystem.Controllers
         [EnableRateLimiting("register")]
         public async Task<IActionResult> RegisterEmployee([FromBody] EmployeeRegisterDto model)
         {
+            var validation = await _employeeValidator.ValidateAsync(model);
+            if (!validation.IsValid)
+                return BadRequest(validation.Errors);
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 

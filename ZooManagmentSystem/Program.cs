@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
+using FluentValidation;
 using ZooManagmentSystem.Data;
 using ZooManagmentSystem.Hubs;
 using ZooManagmentSystem.Models.Employee;
@@ -106,6 +107,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddSignalR();
 builder.Services.AddScoped<NotificationService>();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 builder.Services.AddRateLimiter(options =>
 {

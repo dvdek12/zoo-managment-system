@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,10 +20,12 @@ namespace ZooManagmentSystem.Controllers.Clients
     public class TicketsController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IValidator<TicketNewDto> _validator;
 
-        public TicketsController(AppDbContext context)
+        public TicketsController(AppDbContext context, IValidator<TicketNewDto> validator)
         {
             _context = context;
+            _validator = validator;
         }
 
         // GET: tickets
@@ -131,6 +134,10 @@ namespace ZooManagmentSystem.Controllers.Clients
         [HttpPost]
         public async Task<ActionResult<TicketModel>> CreateTicket(TicketNewDto ticketModel)
         {
+            var validation = await _validator.ValidateAsync(ticketModel);
+            if (!validation.IsValid)
+                return BadRequest(validation.Errors);
+
             int clientId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "ClientId").Value ?? "0");
 
             var entryTypesIds = ticketModel.EntryTypeIds.Select(et => et.Key).ToList();

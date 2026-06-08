@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentValidation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,11 +21,13 @@ namespace ZooManagmentSystem.Controllers.Employees
     {
         private readonly AppDbContext _context;
         private readonly NotificationService _notification;
+        private readonly IValidator<TaskCreateDto> _validator;
 
-        public TasksController(AppDbContext context, NotificationService notification)
+        public TasksController(AppDbContext context, NotificationService notification, IValidator<TaskCreateDto> validator)
         {
             _context = context;
             _notification = notification;
+            _validator = validator;
         }
 
         // GET: task
@@ -190,6 +193,9 @@ namespace ZooManagmentSystem.Controllers.Employees
         [HttpPost]
         public async Task<ActionResult<TaskModel>> PostTaskModel(TaskCreateDto taskModel)
         {
+            var validation = await _validator.ValidateAsync(taskModel);
+            if (!validation.IsValid)
+                return BadRequest(validation.Errors);
 
             TaskModel newTask = new TaskModel {
                 Name = taskModel.Name,
