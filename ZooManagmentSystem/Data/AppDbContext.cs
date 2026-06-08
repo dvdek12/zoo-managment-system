@@ -98,7 +98,7 @@ namespace ZooManagmentSystem.Data
 
             modelBuilder.Entity<AnimalModel>()
                 .HasOne(t => t.Enclosure)
-                .WithMany()
+                .WithMany(e => e.Animals)
                 .HasForeignKey(t => t.EnclosureId)
                 .OnDelete(DeleteBehavior.SetNull);
 
