@@ -46,7 +46,7 @@ namespace ZooManagmentSystem.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<NotificationModel>>> GetNotificationsForUser()
         {
-            int id = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value ?? "0");
+            int id = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "EmployeeId")?.Value ?? "0");
 
             var notificationModel = await _context.Notifications.Where(n => n.UserId == id).ToListAsync();
 
@@ -56,6 +56,38 @@ namespace ZooManagmentSystem.Controllers
             }
 
             return Ok(notificationModel);
+        }
+
+        [Route("{id}/read")]
+        [HttpPut]
+        public async Task<IActionResult> MarkAsRead(int id)
+        {
+            int employeeId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "EmployeeId")?.Value ?? "0");
+
+            var notification = await _context.Notifications.FindAsync(id);
+            if (notification == null || notification.UserId != employeeId)
+                return NotFound();
+
+            notification.IsRead = true;
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [Route("read-all")]
+        [HttpPut]
+        public async Task<IActionResult> MarkAllAsRead()
+        {
+            int employeeId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "EmployeeId")?.Value ?? "0");
+
+            var unread = await _context.Notifications
+                .Where(n => n.UserId == employeeId && !n.IsRead)
+                .ToListAsync();
+
+            unread.ForEach(n => n.IsRead = true);
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
     }
 }
