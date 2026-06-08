@@ -178,7 +178,7 @@ namespace ZooManagmentSystem.Controllers
             }
             else
             {
-                return BadRequest(new { message = "Report type not supported yet." });
+                return BadRequest(new { message = "You are not authorized to create this report." });
             }
 
             reportModel.Content = JsonSerializer.Serialize(contentObj);
