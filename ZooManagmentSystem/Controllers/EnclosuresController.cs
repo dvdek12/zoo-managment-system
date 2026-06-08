@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,10 +20,12 @@ namespace ZooManagmentSystem.Controllers
     public class EnclosuresController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IValidator<EnclosureDto> _validator;
 
-        public EnclosuresController(AppDbContext context)
+        public EnclosuresController(AppDbContext context, IValidator<EnclosureDto> validator)
         {
             _context = context;
+            _validator = validator;
         }
 
         // GET: enclosure
@@ -111,6 +114,10 @@ namespace ZooManagmentSystem.Controllers
         [HttpPost]
         public async Task<ActionResult<EnclosureModel>> PostEnclosureModel(EnclosureDto enclosureModel)
         {
+            var validation = await _validator.ValidateAsync(enclosureModel);
+            if (!validation.IsValid)
+                return BadRequest(validation.Errors);
+
             var newEnclosure = new EnclosureModel
             {
                 Name = enclosureModel.Name,

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,10 +18,12 @@ namespace ZooManagmentSystem.Controllers.Animals
     public class AnimalsController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IValidator<AnimalCreateDto> _validator;
 
-        public AnimalsController(AppDbContext context)
+        public AnimalsController(AppDbContext context, IValidator<AnimalCreateDto> validator)
         {
             _context = context;
+            _validator = validator;
         }
 
         [Route("")]
@@ -108,6 +111,10 @@ namespace ZooManagmentSystem.Controllers.Animals
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AnimalCreateDto animal)
         {
+            var validation = await _validator.ValidateAsync(animal);
+            if (!validation.IsValid)
+                return BadRequest(validation.Errors);
+
             try
             {
                 var newAnimal = new AnimalModel
