@@ -12,6 +12,7 @@
         public DateTime PurchaseDate { get; set; }
         public DateTime ValidUntil { get; set; }
         public decimal Price { get; set; }
+        public bool IsUsed { get; set; } 
         public Dictionary<string, int> EntryTypes { get; set; } = new Dictionary<string, int>();
     }
 }

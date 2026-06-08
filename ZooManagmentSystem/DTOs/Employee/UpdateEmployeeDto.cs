@@ -20,6 +20,5 @@
         public string? PhoneNumber { get; set; }
         public string? Email { get; set; }
         public int? RoleId { get; set; }
-        public int? SupervisorId { get; set; }
     }
 }

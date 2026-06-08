@@ -117,10 +117,7 @@ namespace ZooManagmentSystem.Controllers
                 {
                     employee.RoleId = model.RoleId;
                 }
-                if(model.SupervisorId != null)
-                {
-                    employee.SupervisorId = model.SupervisorId;
-                }
+
 
                 _context.Employees.Add(employee);
 

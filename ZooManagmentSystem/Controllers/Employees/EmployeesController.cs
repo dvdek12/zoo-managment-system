@@ -14,7 +14,7 @@ namespace ZooManagmentSystem.Controllers.Employees
 {
     [Route("employee")]
     [ApiController]
-    //[Authorize(Roles = "Employee")]
+    [Authorize(Roles = "Employee")]
     public class EmployeesController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -36,7 +36,6 @@ namespace ZooManagmentSystem.Controllers.Employees
                 BirthDay = e.BirthDay,
                 Email = e.Email,
                 PhoneNumber = e.PhoneNumber,
-                SupervisorId = e.SupervisorId,
                 RoleId = e.RoleId,
                 IconId = e.IconId
             }).ToListAsync();
@@ -61,7 +60,6 @@ namespace ZooManagmentSystem.Controllers.Employees
                 BirthDay = employeeModel.BirthDay,
                 Email = employeeModel.Email,
                 PhoneNumber = employeeModel.PhoneNumber,
-                SupervisorId = employeeModel.SupervisorId,
                 RoleId = employeeModel.RoleId,
                 IconId = employeeModel.IconId
             };
@@ -142,8 +140,6 @@ namespace ZooManagmentSystem.Controllers.Employees
                 employee.Email = employeeModel.Email;
             if (employeeModel.RoleId != null)
                 employee.RoleId = employeeModel.RoleId;
-            if (employeeModel.SupervisorId != null)
-                employee.SupervisorId = employeeModel.SupervisorId;
 
                 _context.Entry(employee).State = EntityState.Modified;
 
@@ -236,7 +232,6 @@ namespace ZooManagmentSystem.Controllers.Employees
             return Ok(new { message = "Role deleted successfuly!" });
         }
 
-        //First we need to understand how to remove claims and identity
         /* DELETE: api/Employees/5 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployeeModel(int id)

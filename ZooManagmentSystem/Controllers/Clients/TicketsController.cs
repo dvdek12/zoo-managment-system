@@ -77,6 +77,7 @@ namespace ZooManagmentSystem.Controllers.Clients
                 PurchaseDate = ticketModel.PurchaseDate,
                 ValidUntil = ticketModel.ValidUntil,
                 Price = ticketModel.Price,
+                IsUsed = ticketModel.IsUsed,
                 EntryTypes = new Dictionary<string, int>()
             };
             foreach(TicketEntryTypeModel ticketEntry in ticketModel.EntryTypes)
@@ -116,6 +117,7 @@ namespace ZooManagmentSystem.Controllers.Clients
                     PurchaseDate = ticket.PurchaseDate,
                     Price = ticket.Price,
                     ValidUntil = ticket.ValidUntil,
+                    IsUsed = ticket.IsUsed,
                     EntryTypes = new Dictionary<string, int>()
                 };
                 foreach (TicketEntryTypeModel entry in ticket.EntryTypes)
