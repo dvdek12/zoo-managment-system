@@ -50,7 +50,7 @@ namespace ZooManagmentSystem.Controllers.Clients
                 foreach (var entry in ticket.EntryTypes)
                 {
                     var entryType = await _context.EntryTypes.FindAsync(entry.EntryTypeId);
-                    ticketDto.EntryTypes.Add(entryType.TypeName, entry.Quantity);
+                    ticketDto.EntryTypes.Add(entryType?.TypeName ?? "Unknown", entry.Quantity);
                 }
                 ticketList.Add(ticketDto);
             }

@@ -60,6 +60,12 @@ namespace ZooManagmentSystem.Data
                 .HasForeignKey(te => te.TicketId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<TicketEntryTypeModel>()
+                .HasOne(te => te.EntryType)
+                .WithMany()
+                .HasForeignKey(te => te.EntryTypeId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             modelBuilder.Entity<AnimalHistoryModel>()
                 .HasOne(h => h.Animal)
                 .WithMany(a => a.AnimalHistories)
@@ -84,6 +90,23 @@ namespace ZooManagmentSystem.Data
                 .HasForeignKey(t => t.RoleId)
                 .OnDelete(DeleteBehavior.SetNull);
 
+            modelBuilder.Entity<TaskModel>()
+               .HasOne(t => t.Category)
+               .WithMany()
+               .HasForeignKey(t => t.CategoryId)
+               .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<AnimalModel>()
+                .HasOne(t => t.Enclosure)
+                .WithMany()
+                .HasForeignKey(t => t.EnclosureId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<EnclosureModel>()
+                .HasOne(t => t.Type)
+                .WithMany()
+                .HasForeignKey(t => t.TypeId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 
