@@ -50,7 +50,7 @@ namespace ZooManagmentSystem.Controllers.Clients
                 foreach (var entry in ticket.EntryTypes)
                 {
                     var entryType = await _context.EntryTypes.FindAsync(entry.EntryTypeId);
-                    ticketDto.EntryTypes.Add(entryType.TypeName, entry.Quantity);
+                    ticketDto.EntryTypes.Add(entryType?.TypeName ?? "Unknown", entry.Quantity);
                 }
                 ticketList.Add(ticketDto);
             }
@@ -77,6 +77,7 @@ namespace ZooManagmentSystem.Controllers.Clients
                 PurchaseDate = ticketModel.PurchaseDate,
                 ValidUntil = ticketModel.ValidUntil,
                 Price = ticketModel.Price,
+                IsUsed = ticketModel.IsUsed,
                 EntryTypes = new Dictionary<string, int>()
             };
             foreach(TicketEntryTypeModel ticketEntry in ticketModel.EntryTypes)
@@ -116,6 +117,7 @@ namespace ZooManagmentSystem.Controllers.Clients
                     PurchaseDate = ticket.PurchaseDate,
                     Price = ticket.Price,
                     ValidUntil = ticket.ValidUntil,
+                    IsUsed = ticket.IsUsed,
                     EntryTypes = new Dictionary<string, int>()
                 };
                 foreach (TicketEntryTypeModel entry in ticket.EntryTypes)

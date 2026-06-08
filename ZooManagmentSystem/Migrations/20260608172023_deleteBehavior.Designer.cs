@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ZooManagmentSystem.Data;
 
@@ -11,9 +12,11 @@ using ZooManagmentSystem.Data;
 namespace ZooManagmentSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260608172023_deleteBehavior")]
+    partial class deleteBehavior
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -268,6 +271,9 @@ namespace ZooManagmentSystem.Migrations
                     b.Property<int?>("EnclosureId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("EnclosureModelid")
+                        .HasColumnType("int");
+
                     b.Property<int?>("FeedingEmployeeId")
                         .HasColumnType("int");
 
@@ -294,6 +300,8 @@ namespace ZooManagmentSystem.Migrations
                     b.HasKey("id");
 
                     b.HasIndex("EnclosureId");
+
+                    b.HasIndex("EnclosureModelid");
 
                     b.HasIndex("FeedingEmployeeId");
 
@@ -884,9 +892,13 @@ namespace ZooManagmentSystem.Migrations
             modelBuilder.Entity("ZooManagmentSystem.Models.Animal.AnimalModel", b =>
                 {
                     b.HasOne("ZooManagmentSystem.Models.EnclosureModel", "Enclosure")
-                        .WithMany("Animals")
+                        .WithMany()
                         .HasForeignKey("EnclosureId")
                         .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("ZooManagmentSystem.Models.EnclosureModel", null)
+                        .WithMany("Animals")
+                        .HasForeignKey("EnclosureModelid");
 
                     b.HasOne("ZooManagmentSystem.Models.Employee.EmployeeModel", "FeedingEmployee")
                         .WithMany("AssignedAnimals")

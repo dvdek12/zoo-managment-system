@@ -14,10 +14,7 @@ namespace ZooManagmentSystem.Models.Report
 
     public enum ReportType
     {
-        WorkersPerformance,
-        Financial,
         VisitorStatistics,
-        FeedingPlan,
-        AnimalsCondition
+        FeedingPlan
     }
 }

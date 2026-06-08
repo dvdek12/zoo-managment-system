@@ -7,6 +7,7 @@
         public DateTime PurchaseDate { get; set; }
         public DateTime ValidUntil { get; set; }
         public decimal Price { get; set; }
+        public bool IsUsed { get; set; } = false;
         public List<TicketEntryTypeModel> EntryTypes { get; set; }
     }
 }

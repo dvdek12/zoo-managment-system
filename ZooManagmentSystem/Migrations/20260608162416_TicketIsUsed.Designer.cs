@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ZooManagmentSystem.Data;
 
@@ -11,9 +12,11 @@ using ZooManagmentSystem.Data;
 namespace ZooManagmentSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260608162416_TicketIsUsed")]
+    partial class TicketIsUsed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -430,7 +433,7 @@ namespace ZooManagmentSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int?>("EntryTypeId")
+                    b.Property<int>("EntryTypeId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -885,8 +888,7 @@ namespace ZooManagmentSystem.Migrations
                 {
                     b.HasOne("ZooManagmentSystem.Models.EnclosureModel", "Enclosure")
                         .WithMany("Animals")
-                        .HasForeignKey("EnclosureId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("EnclosureId");
 
                     b.HasOne("ZooManagmentSystem.Models.Employee.EmployeeModel", "FeedingEmployee")
                         .WithMany("AssignedAnimals")
@@ -952,7 +954,8 @@ namespace ZooManagmentSystem.Migrations
                     b.HasOne("ZooManagmentSystem.Models.Client.EntryTypeModel", "EntryType")
                         .WithMany()
                         .HasForeignKey("EntryTypeId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ZooManagmentSystem.Models.Client.TicketModel", "Ticket")
                         .WithMany("EntryTypes")
@@ -1012,8 +1015,7 @@ namespace ZooManagmentSystem.Migrations
 
                     b.HasOne("ZooManagmentSystem.Models.Enums.TaskCategoryModel", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("ZooManagmentSystem.Models.EnclosureModel", "Enclosure")
                         .WithMany()
@@ -1043,8 +1045,7 @@ namespace ZooManagmentSystem.Migrations
                 {
                     b.HasOne("ZooManagmentSystem.Models.Enums.EnclosureTypeModel", "Type")
                         .WithMany()
-                        .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("TypeId");
 
                     b.Navigation("Type");
                 });
