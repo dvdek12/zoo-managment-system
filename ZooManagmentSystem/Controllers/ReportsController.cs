@@ -122,6 +122,20 @@ namespace ZooManagmentSystem.Controllers
             return Ok(types);
         }
 
+        [Route("types/forManager")]
+        [HttpGet]
+        [Authorize(Roles = "Manager")]
+        public ActionResult<IEnumerable<object>> GetReportTypesForManager()
+        {
+            var allowedTypes = new[] { ReportType.VisitorStatistics, ReportType.FeedingPlan };
+
+            var types = allowedTypes
+                .Select(t => new { Id = (int)t, Name = t.ToString() })
+                .ToList();
+
+            return Ok(types);
+        }
+
 
         [Route("forManager")]
         [HttpPost]
@@ -204,7 +218,7 @@ namespace ZooManagmentSystem.Controllers
 
         [Route("{id}")]
         [HttpDelete]
-        [Authorize(Roles = "Manager")]
+        //[Authorize(Roles = "Manager")]
         public async Task<IActionResult> DeleteReportModel(int id)
         {
             var reportModel = await _context.Reports.FindAsync(id);
