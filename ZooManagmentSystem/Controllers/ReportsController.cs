@@ -109,6 +109,19 @@ namespace ZooManagmentSystem.Controllers
             return Ok(types);
         }
 
+        [Route("types/forEmployee")]
+        [HttpGet]
+        public ActionResult<IEnumerable<object>> GetReportTypesForEmployee()
+        {
+            var allowedTypes = new[] { ReportType.FeedingPlan };
+
+            var types = allowedTypes
+                .Select(t => new { Id = (int)t, Name = t.ToString() })
+                .ToList();
+
+            return Ok(types);
+        }
+
 
         [Route("forManager")]
         [HttpPost]
