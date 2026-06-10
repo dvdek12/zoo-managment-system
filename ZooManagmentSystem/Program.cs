@@ -131,19 +131,19 @@ builder.Services.AddRateLimiter(options =>
         opt.QueueLimit = 0;
     });
 
-    // 10 generowań PDF / minutę per IP
+    // 8 generowań PDF / minutę per IP
     options.AddFixedWindowLimiter("pdf", opt =>
     {
-        opt.PermitLimit = 10;
+        opt.PermitLimit = 8;
         opt.Window = TimeSpan.FromMinutes(1);
         opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
         opt.QueueLimit = 0;
     });
 
-    // 10 zapytań do zewnętrznego API / minutę per IP
+    // 6 zapytań do zewnętrznego API / minutę per IP
     options.AddFixedWindowLimiter("externalApi", opt =>
     {
-        opt.PermitLimit = 10;
+        opt.PermitLimit = 6;
         opt.Window = TimeSpan.FromMinutes(1);
         opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
         opt.QueueLimit = 0;
@@ -167,13 +167,7 @@ using (var scope = app.Services.CreateScope())
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    /*  Test Employees
-    var testEmployees = new[]
-    {
-        new { Email = "anna.nowak@zoo.pl", First = "Anna", Last = "Nowak", Birth = new DateTime(1988, 3, 10) },
-        new { Email = "piotr.wisniewski@zoo.pl", First = "Piotr", Last = "Wi�niewski", Birth = new DateTime(1992, 7, 22) },
-    };
-    */
+ 
 
     foreach (var role in new[] { "Employee", "Client", "Manager" })
     {
@@ -186,42 +180,7 @@ using (var scope = app.Services.CreateScope())
 
 
 
-    /*  Test Employees
-    foreach (var emp in testEmployees)
-    {
-        if (await userManager.FindByEmailAsync(emp.Email) == null)
-        {
-            var user = new ApplicationUser { UserName = emp.Email, Email = emp.Email };
-            var result = await userManager.CreateAsync(user, "Test1234!");
-            if (result.Succeeded)
-            {
-                context.Employees.Add(new EmployeeModel
-                {
-                    ApplicationUserId = user.Id,
-                    Email = emp.Email,
-                    FirstName = emp.First,
-                    LastName = emp.Last,
-                    BirthDay = emp.Birth,
-                });
-                await context.SaveChangesAsync();
-                await userManager.AddToRoleAsync(user, "Employee");
-
-                bool isManager = await context.Employees
-                    .Where(e => e.ApplicationUserId == user.Id)
-                    .Select(e => e.Role.IsManagerial)
-                    .FirstOrDefaultAsync();
-
-                Debug.WriteLine(isManager);
-
-                if (isManager)
-                {
-                    Console.WriteLine(isManager);
-                    await userManager.AddToRoleAsync(user, "Manager");
-                }
-            }
-        }
-    }
-    */
+    
 }
 
 
