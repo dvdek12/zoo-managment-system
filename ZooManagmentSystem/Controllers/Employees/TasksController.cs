@@ -138,7 +138,6 @@ namespace ZooManagmentSystem.Controllers.Employees
         }
 
         // PUT: task/5
-        [Authorize(Roles = "Manager")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTaskModel(int id, TaskUpdateDto taskModel)
         {
