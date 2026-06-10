@@ -45,6 +45,7 @@ namespace ZooManagmentSystem.Controllers.Clients
                     PurchaseDate = ticket.PurchaseDate,
                     ValidUntil = ticket.ValidUntil,
                     Price = ticket.Price,
+                    IsUsed = ticket.IsUsed,
                     EntryTypes = new Dictionary<string, int>()
                 };
                 foreach (var entry in ticket.EntryTypes)
@@ -131,6 +132,30 @@ namespace ZooManagmentSystem.Controllers.Clients
             return Ok(ticketList);
         }
 
+        // put: /tickets/use/5
+        [Authorize(Roles = "Manager")]
+        [HttpGet("{id}/use")]
+        public async Task<IActionResult> UpdateTicket(int id)
+        {
+            var ticket = await _context.Tickets.FindAsync(id);
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            // Update ticket properties here
+            if(ticket.IsUsed)
+            {
+                return BadRequest(new { message = "Ticket is already used." });
+            }
+            ticket.IsUsed = true;
+
+            _context.Tickets.Update(ticket);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Ticket used successfully!" });
+        }
+
         // POST: tickets
         [Authorize(Roles = "Client")]
         [HttpPost]
@@ -186,7 +211,7 @@ namespace ZooManagmentSystem.Controllers.Clients
             return Ok(new { message = "Ticket deleted successfully!" });
         }
 
-        [Authorize(Roles = "Client, Manager, Employee")]
+        [AllowAnonymous]
         [Route("entryType")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EntryTypeModel>>> GetEntryTypes()
